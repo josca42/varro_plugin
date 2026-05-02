@@ -159,7 +159,7 @@ def build_app(dashboards_dir: Path) -> FastHTML:
         Script(src=PLOTLY_CDN),
         Script(TABLE_SCRIPT),
         Script(src=ALPINE_CDN, defer=True),
-        MarkdownJS(),
+        MarkdownJS(".prose"),
         HighlightJS(langs=["python", "javascript", "html", "css"]),
     )
 
@@ -174,6 +174,10 @@ def build_app(dashboards_dir: Path) -> FastHTML:
 
     @rt("/_/static/{path:path}")
     def static(path: str):
+        return FileResponse(STATIC_DIR / path)
+
+    @rt("/static/{path:path}")
+    def static_alias(path: str):
         return FileResponse(STATIC_DIR / path)
 
     @rt("/_/health")

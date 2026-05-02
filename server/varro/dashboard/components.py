@@ -4,7 +4,17 @@ import hashlib
 from typing import Any
 from urllib.parse import urlencode
 
-from fasthtml.common import A, Aside, Button, Div, Form as HtmlForm, Main, NotStr, Span
+from fasthtml.common import (
+    A,
+    Aside,
+    Button,
+    Div,
+    Form as HtmlForm,
+    Img,
+    Main,
+    NotStr,
+    Span,
+)
 
 from varro.dashboard.filters import Filter, SelectFilter
 from varro.dashboard.helpers import FilterInput
@@ -16,12 +26,13 @@ from varro.dashboard.parser import (
     MarkdownNode,
 )
 
-MARKDOWN_CLASS = "marked markdown"
+MARKDOWN_CLASS = "prose"
 
-CHEVRON_LEFT = NotStr(
+PANEL_ICON = NotStr(
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
-    'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
-    '<polyline points="15 18 9 12 15 6"/></svg>'
+    'stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">'
+    '<rect x="3" y="3" width="18" height="18" rx="2"/>'
+    '<line x1="15" y1="3" x2="15" y2="21"/></svg>'
 )
 
 TOGGLE_JS = NotStr(
@@ -31,12 +42,20 @@ TOGGLE_JS = NotStr(
   var t = document.getElementById('toc-toggle');
   if (!t) return;
   var app = document.querySelector('.app');
-  if (localStorage.getItem('toc-collapsed') === '1') app.classList.add('collapsed');
+
+  if (localStorage.getItem('toc-collapsed') === '1') {
+    app.classList.add('collapsed');
+  }
+
   t.addEventListener('click', function(){
     app.classList.toggle('collapsed');
-    localStorage.setItem('toc-collapsed',
-      app.classList.contains('collapsed') ? '1' : '0');
-    setTimeout(function(){ window.dispatchEvent(new Event('resize')); }, 220);
+    localStorage.setItem(
+      'toc-collapsed',
+      app.classList.contains('collapsed') ? '1' : '0'
+    );
+    setTimeout(function(){
+      window.dispatchEvent(new Event('resize'));
+    }, 220);
   });
 })();
 </script>
@@ -234,14 +253,31 @@ def _render_toc(
         )
 
     return Aside(
+        _render_toc_top(),
+        Div(*items, cls="toc-list"),
+        cls="toc",
+    )
+
+
+def _render_toc_top() -> Any:
+    return Div(
+        A(
+            Span(
+                Img(src="/static/varro_logo.png", alt=""),
+                cls="brand-mark",
+            ),
+            Span("VARRO", cls="brand-name"),
+            href="/",
+            cls="toc-brand",
+        ),
         Button(
-            CHEVRON_LEFT,
+            PANEL_ICON,
             id="toc-toggle",
             cls="toc-toggle",
             aria_label="Toggle sidebar",
+            type="button",
         ),
-        Div(*items, cls="toc-list"),
-        cls="toc",
+        cls="toc-top",
     )
 
 
