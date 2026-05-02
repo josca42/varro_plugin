@@ -1,0 +1,6 @@
+{
+  "name": "varro",
+  "version": "0.1.0",
+  "description": "Data-analysis scaffold for Claude Code: SQL, persistent Jupyter, and markdown dashboards. Skills and code are intentionally minimal so users grow the plugin to fit their setup.",
+  "author": { "name": "josca42" }
+}

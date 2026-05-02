@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+node_modules/
+.sesskey
+
+# macOS metadata
+**/.DS_Store
+# plugin/*
+.DS_Store

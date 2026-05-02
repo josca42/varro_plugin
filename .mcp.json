@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "varro": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--project",
+        "${CLAUDE_PLUGIN_ROOT}/server",
+        "python",
+        "-m",
+        "varro.main"
+      ]
+    }
+  }
+}
