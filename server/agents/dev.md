@@ -40,7 +40,7 @@ s = take_snapshot(
 print(s)
 ```
 
-Requires the dashboard server to be running at the URL — outputs are executed in-process; per-figure PNGs are written via Kaleido.
+The URL is a state descriptor — only path and query are read. Outputs execute in-process; the dashboard HTTP server is not consulted. Per-figure PNGs written via Kaleido.
 
 ## Known landmines
 
