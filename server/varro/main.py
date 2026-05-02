@@ -92,18 +92,20 @@ async def sql(query: str, df_name: str | None = None) -> list[TextContent]:
     `dashboards/.varro/sql_connection.txt`; raises if the file is missing —
     see the SQL skill for setup).
 
-    `query` is sent as-is. Date/datetime columns in the result are
+    Two modes, chosen by `df_name`:
+    - Investigation (`df_name=None`): no kernel side effects, no notebook
+      record. Preview is up to 30 rows. Use when the result doesn't need
+      to live on as a Python variable.
+    - Loading (`df_name="x"`): the DataFrame is stored in the kernel as `x`
+      and `x = run_sql(...)` is appended to the current notebook so the
+      dataset reappears on replay. Preview is a 5-row confirmation only.
+      `df_name` must be a valid Python identifier.
+
+    `query` is sent as-is; date/datetime columns in the result are
     auto-converted to pandas Timestamps.
 
-    If `df_name` is given (must be a valid Python identifier), the DataFrame
-    is stored under that name in the Jupyter kernel namespace and
-    `df_name = run_sql(...)` is appended to the current notebook so the
-    dataset reappears on replay. Without `df_name`, the call is exploratory
-    and nothing is persisted.
-
-    Returns a text block with `row_count: N`, a dtypes summary, and a preview
-    table (capped at 30 rows without `df_name`; with `df_name`, the full table
-    for results of 20 rows or fewer, otherwise 5 rows).
+    Returns a text block with `row_count: N`, a dtypes summary, and the
+    mode-appropriate preview.
     """
     if df_name and not df_name.isidentifier():
         raise RuntimeError("df_name must be a valid Python identifier.")
@@ -126,10 +128,9 @@ async def sql(query: str, df_name: str | None = None) -> list[TextContent]:
                 nb.resolve(current_notebook),
                 f'{df_name} = run_sql("""\n{query.strip()}\n""")',
             )
-            max_rows = 20 if len(df) < 21 else 5
             result_parts.insert(0, f"Stored as {df_name}")
             result_parts.append(df_dtypes(df))
-            result_parts.append(df_preview(df, max_rows=max_rows, name=df_name))
+            result_parts.append(df_preview(df, max_rows=5, name=df_name))
         else:
             result_parts.append(df_preview(df, max_rows=30))
 

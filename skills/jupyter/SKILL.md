@@ -16,13 +16,7 @@ selection, arguments, and result shape; this file covers usage strategy.
 
 ## SQL inside cells
 
-The kernel has `from varro.sql import run_sql` pre-imported, so you can query inline:
-
-```python
-df = run_sql("select * from sales limit 100")
-```
-
-Use this for transient queries inside an analysis. Use `mcp__varro__sql` with `df_name=...` when you want the query recorded as a top-level cell that replays on notebook resume.
+`from varro.sql import run_sql` is pre-imported, so jupyter cells can run SQL inline. Use this for **composition** — when SQL is part of a larger Python computation (queries built from Python state, multiple queries combined, query-then-transform in one cell). For single complete SQL statements, the `sql` tool is the canonical entry point — see the [sql skill](../sql/SKILL.md).
 
 ## Recovery
 
