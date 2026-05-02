@@ -20,14 +20,12 @@ Place data files under `data/` (top-level). Read them with pandas inside output 
 Dashboard URLs are content-centric:
 
 ```
+/                        # editable landing page (dashboards/index.md)
 /<dashboard>
 /<dashboard>/<page>
-/<dashboard>/_/fig/<name>
-/<dashboard>/_/table/<name>
-/<dashboard>/_/metric/<name>
 ```
 
-`_`, `api`, `assets`, `favicon.ico`, and `static` are reserved dashboard names.
+`_`, `api`, `assets`, `favicon.ico`, and `static` are reserved dashboard names. The landing page template supports `{{ dashboards }}` to expand into a list of dashboard links.
 
 ## dashboard.md syntax
 
@@ -126,7 +124,7 @@ def fn_name(filters: dict):
   - `pd.io.formats.style.Styler` → static styled table
   - `plotly.graph_objects.Figure` (or anything with `.to_html()`) → embedded Plotly chart
 - Function name must match the `name=` attribute on the markdown tag. `<fig />`, `<table />`, `<metric />` dispatch by return type, not by tag.
-- Output modules are cached until `outputs.py` or any `outputs/**/*.py` file changes. Use module-local `@functools.cache` helpers for small dataset reads.
+- Use module-local `@functools.cache` helpers when an output reads a dataset that doesn't change per-call.
 
 ## SQL datasets
 
@@ -174,22 +172,6 @@ Optional SQL filters should use the `IS NULL OR` pattern:
 ```sql
 where (:region is null or region = :region)
 ```
-
-## Rendering surface
-
-- **FastHTML + HTMX** for server-rendered fragments and filter sync via `HX-Replace-Url` + `HX-Trigger: filtersChanged`
-- **Alpine.js** for client-side tab state
-- **Plotly** charts, rendered with `include_plotlyjs=False` (one shared CDN script)
-- **Kaleido** for per-figure PNG export in snapshots
-
-The root page `/` is editable markdown at `dashboards/index.md`. It is rendered through Jinja2 on every request; `{{ dashboards }}` expands to a markdown list of available dashboard links or `No dashboards yet.`.
-
-## Data flow for a filter change
-
-1. User changes a `<filter-select />` → HTMX `change delay:300ms` → `GET /{name}/_/filters?region=east` or `GET /{name}/{page}/_/filters?region=east`
-2. Server replies with empty body + `HX-Replace-Url: /{name}?region=east` (or the page path) + `HX-Trigger: filtersChanged`
-3. Every stable output slot (listens for `filtersChanged from:body`) re-fetches `/{name}/_/fig/...`, `/{name}/_/table/...`, `/{name}/_/metric/...` with `hx-include="#filters"` appending query params. Component attrs are carried as internal `__*` params.
-4. Fragments swap inside the output slot via `hx-swap="innerHTML"` so future filter refreshes keep working.
 
 ## After authoring
 

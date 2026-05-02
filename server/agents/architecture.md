@@ -12,10 +12,7 @@ The dashboard server runs separately — see [dev.md](dev.md).
 
 The `varro` CLI entrypoint [varro/cli.py](../varro/cli.py) (registered via `[project.scripts]` in [pyproject.toml](../pyproject.toml)) starts the dashboard HTTP server. The MCP server is started by MCP clients via `python -m varro.main`.
 
-MCP tools:
-- `jupyter(code, show=[...], notebook=None)` — run Python in the persistent IPython shell, optionally render named objects (DataFrames → text preview; matplotlib → PNG; plotly → PNG via `plotly.to_image`). Each successful cell is appended to the current notebook file; passing `notebook="<name>"` switches (or creates) a notebook by replaying its cells in a fresh kernel
-- `sql(query, df_name=None)` — runs SQL through the shared connection-file engine via `run_sql`, optionally stores the result DataFrame in the IPython shell, and (when `df_name` is given) appends a `df_name = run_sql("""...""")` cell to the current notebook so the dataset replays on resume
-- `dashboard_snapshot(url)` — given a full dashboard URL (e.g. `http://127.0.0.1:5011/sales?region=North`), runs the active page's referenced outputs, writes figures/tables/metrics/PNG under `dashboards/<name>/snapshots/<filter_key>/`
+The three MCP tools (`jupyter`, `sql`, `dashboard_snapshot`) are defined in [varro/main.py](../varro/main.py); their docstrings are the canonical contract.
 
 Notebook persistence detail in [notebooks.md](notebooks.md). State lives in the `.py` file; we do not pickle the live namespace.
 
