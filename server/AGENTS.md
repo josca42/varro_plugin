@@ -1,14 +1,6 @@
-# Agent notes
+# Server code
 
-Use the `agents/` folder for project notes and learnings.
-The notes index is [index.md](agents/index.md).
-
-If you have learned something during a conversation then update the notes in the `agents/` folder, so you can use these learnings in a future work session.
-If new features are implemented or existing features changed then also update notes accordingly.
-
-If you have deleted a feature then remove corresponding notes to keep notes up to date.
-
-Not everything needs to be written down. Use your judgement
+Code-level notes (architecture, dev/ops, persistence design) live in [agents/](agents/index.md). Plugin-wide guidance is in [../AGENTS.md](../AGENTS.md) and [../notes/](../notes/index.md).
 
 # Code style
 

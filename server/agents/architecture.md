@@ -66,4 +66,4 @@ Slot identity (`data-output-name`, `data-output-type`) is stamped on the placeho
 - `Figure(fig, output_name)`, `MetricCard(m, output_name)` — [helpers.py](../varro/dashboard/helpers.py)
 - `DataTable(df, attrs, output_name)`, `StyledTable(styler, output_name)` — [tables.py](../varro/dashboard/tables.py)
 
-`_render_output` in [server.py](../varro/dashboard/server.py) is where it gets passed. Design rationale (slot stable across HTMX swaps, card replaced) lives in [../../agents/design.md](../../agents/design.md).
+`_render_output` in [server.py](../varro/dashboard/server.py) is where it gets passed. Design rationale (slot stable across HTMX swaps, card replaced) lives in [../../notes/design.md](../../notes/design.md).

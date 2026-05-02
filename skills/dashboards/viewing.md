@@ -33,13 +33,13 @@ Stable selectors for browser automation:
 - Inside the slot is the **rendered card**, which is replaced on each swap. It carries `data-slot` (`varro-figure`, `varro-table`, `varro-styled-table`, or `metric-value`) and repeats `data-output-name`, so you can target the card directly once it's rendered.
 - Filter wrappers carry `data-filter-name`.
 
-The dashboard server has to be running for the browser. Start it from the plugin's server directory:
+The browser surface needs the dashboard HTTP server. If `http://127.0.0.1:5011/_/health` does not respond, start the server in the background before navigating:
 
 ```
 uv run --project ${CLAUDE_PLUGIN_ROOT}/server varro --dir dashboards
 ```
 
-Default host/port is `127.0.0.1:5011`.
+Default host/port is `127.0.0.1:5011`. uv auto-installs dependencies on first run.
 
 ## Reading offline (snapshot)
 
