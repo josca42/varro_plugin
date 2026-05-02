@@ -14,7 +14,7 @@ Not everything needs to be written down. Use your judgement
 
 Elegant minimalism. Every line should earn its place.
 
-**No commentary.** Only include essential comments. If the code needs a comment to be understood, consider rewriting the code. Don't add docstrings, type annotations, or comments to code you didn't change.
+**No commentary.** Only include essential comments. Don't add docstrings, type annotations, or comments to code you didn't change. Exception: MCP tool docstrings in `varro/main.py` are part of the tool's public API — keep them maintained as you change tool behavior.
 
 **Let it fail.** No defensive try/except. Let exceptions propagate with clear tracebacks. Only catch exceptions at system boundaries where you need to convert them (e.g. `ModelRetry` for the AI agent, cleanup in async lifecycle).
 

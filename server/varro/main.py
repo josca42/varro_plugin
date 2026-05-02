@@ -88,11 +88,22 @@ async def _render(name: str) -> list[TextContent | ImageContent]:
 
 @mcp.tool()
 async def sql(query: str, df_name: str | None = None) -> list[TextContent]:
-    """Run SQL using the local connection config.
+    """Run a SQL query against the configured database (SQLAlchemy URL at
+    `dashboards/.varro/sql_connection.txt`; raises if the file is missing —
+    see the SQL skill for setup).
 
-    When df_name is given, the resulting DataFrame is stored in the kernel
-    namespace and the call is appended to the current notebook so it replays
-    on resume.
+    `query` is sent as-is. Date/datetime columns in the result are
+    auto-converted to pandas Timestamps.
+
+    If `df_name` is given (must be a valid Python identifier), the DataFrame
+    is stored under that name in the Jupyter kernel namespace and
+    `df_name = run_sql(...)` is appended to the current notebook so the
+    dataset reappears on replay. Without `df_name`, the call is exploratory
+    and nothing is persisted.
+
+    Returns a text block with `row_count: N`, a dtypes summary, and a preview
+    table (capped at 30 rows without `df_name`; with `df_name`, the full table
+    for results of 20 rows or fewer, otherwise 5 rows).
     """
     if df_name and not df_name.isidentifier():
         raise RuntimeError("df_name must be a valid Python identifier.")
@@ -131,27 +142,29 @@ async def jupyter(
     show: list[str] | None = None,
     notebook: str | None = None,
 ) -> list[TextContent | ImageContent]:
-    """
-    Stateful Jupyter notebook environment. Each call executes as a new cell.
-    Only printed output (stdout) in the notebook cell will be included in the text response.
+    """Stateful IPython kernel. Each call runs `code` as a new cell, with
+    state persisting across calls.
 
-    To see figures and dataframes in the response then add the name of the figure or dataframe to the show list. Do not call fig.show() or plt.show() — figures are displayed via the show parameter only.
+    Successful cells are appended to `notebooks/<current>.py` (Jupytext
+    "percent" format); failed cells raise and are not appended.
 
-    Cells are appended to a `.py` file under `notebooks/` so the kernel state can be reconstructed by replay. The default notebook is `sandbox.py`. Pass `notebook="<name>"` to switch (or create) a different notebook; switching resets the kernel and replays the target file. Once switched, omit `notebook` on subsequent calls.
+    Pass `notebook="<name>"` to switch to (or create) a notebook — this
+    resets the kernel and replays the target file, so only switch when you
+    mean to. Default is `sandbox`.
 
-    The notebook is initialized by running the following code in the first cell.
-    ```python
-    import pandas as pd
-    import numpy as np
-    import plotly.express as px
-    import plotly.graph_objects as go
-    import matplotlib.pyplot as plt
-    ```
+    A fresh kernel pre-imports pandas (`pd`), numpy (`np`), plotly express
+    (`px`), plotly graph_objects (`go`), matplotlib pyplot (`plt`), and
+    `varro.sql.run_sql`.
 
-    Args:
-        code (str): The Python code to execute.
-        show (list[str]): Names of dataframes / matplotlib / plotly figures to render in the response.
-        notebook (str): Optional notebook name to switch to. Persists for subsequent calls.
+    Output rules:
+    - Stdout (`print(...)`) is captured.
+    - DataFrames and figures are NOT auto-rendered. List variable names in
+      `show` to surface them; do not call `fig.show()` or `plt.show()`.
+    - For each `show` entry: a DataFrame renders as a text preview plus
+      dtypes; a matplotlib `Figure` as a PNG (downscaled to ~600k pixels);
+      a plotly `Figure` as a PNG via Kaleido (600x400); other types as
+      `<unsupported type>`.
+    - Empty stdout with empty `show` returns `<no output>`.
     """
     show = show or []
     async with exec_lock:
@@ -179,17 +192,23 @@ async def jupyter(
 
 @mcp.tool()
 async def dashboard_snapshot(url: str) -> list[TextContent]:
-    """Snapshot a dashboard: run all outputs, write figures/tables/metrics to disk.
+    """Snapshot a running dashboard: execute its outputs and write figures,
+    tables, and metrics to disk. The dashboard HTTP server must already be
+    serving at `url` — this tool does not start it.
 
     Args:
-        url: Full dashboard URL including any filters as query params.
-             Example: http://127.0.0.1:5011/titanic?sex=female&pclass=3
+        url: Full dashboard URL including any filters as query params, e.g.
+             `http://127.0.0.1:5011/titanic?sex=female&pclass=3`.
 
-    Writes to dashboards/<name>/snapshots/<filter_key>/ where filter_key is '_' if no filters
-    or 'key1=val1,key2=val2' sorted by key. Contents: figures/<output>.png,
-    tables/<output>.parquet, metrics.json, <YYYY-MM-DD>.date marker.
+    Writes to `dashboards/<name>/snapshots/<filter_key>/` where `filter_key`
+    is `_` for no filters, or `key1=val1,key2=val2` sorted alphabetically
+    (filters at their default value are dropped). Contents:
+    `figures/<output>.png`, `tables/<output>.parquet`, `metrics.json`, and
+    a `<YYYY-MM-DD>.date` marker.
 
-    Returns a text summary of what was written; use Read to inspect PNGs or other artefacts.
+    Returns a text summary of paths and counts written, plus an `errors:`
+    section listing any per-output failures. Use Read to inspect the PNGs,
+    parquet files, or metrics.json.
     """
     summary = take_snapshot(url, DASHBOARDS_DIR)
     lines = [
@@ -199,7 +218,7 @@ async def dashboard_snapshot(url: str) -> list[TextContent]:
         f"metrics: {summary['metrics']}",
         f"tables: {summary['tables']}",
         f"figures: {summary['figures']}",
-    ]  # This seems overly verbose. Consider simplifying.
+    ]
     if summary["errors"]:
         lines.append("errors:")
         lines.extend(f"  - {e}" for e in summary["errors"])
