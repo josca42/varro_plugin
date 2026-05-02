@@ -70,8 +70,9 @@ def take_snapshot(url: str, dashboards_dir: Path) -> dict[str, Any]:
     dash: Dashboard = load_dashboard(folder, page_slug)
     filters = _parse_filters(dash.filters, raw_params)
     key = _filter_key(filters, dash.filters)
+    page_segment = page_slug or "_"
 
-    snap_dir = folder / "snapshots" / key
+    snap_dir = folder / "snapshots" / page_segment / key
     if snap_dir.exists():
         shutil.rmtree(snap_dir)
     snap_dir.mkdir(parents=True)
@@ -125,6 +126,7 @@ def take_snapshot(url: str, dashboards_dir: Path) -> dict[str, Any]:
     return {
         "path": str(snap_dir),
         "url": url,
+        "page": page_segment,
         "filter_key": key,
         "metrics": list(metrics.keys()),
         "tables": tables_written,

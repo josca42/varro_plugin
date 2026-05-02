@@ -1,18 +1,18 @@
 ---
 name: dashboards
-description: Use when creating, editing, navigating, or snapshotting markdown-based dashboards. Dashboards live in dashboards/<name>/ as a dashboard.md (markdown with `:::` containers and `<fig />` `<table />` `<metric />` tags) plus an outputs.py with `@output` Python functions. For deeper detail, read the linked file.
+description: Use when creating, editing, or viewing markdown-based dashboards. Dashboards live in dashboards/<name>/ as a dashboard.md (markdown with `:::` containers and `<fig />` `<table />` `<metric />` tags) plus an outputs.py with `@output` Python functions. The dashboard URL is a canonical state descriptor — same string drives the live browser view and the offline snapshot tool. For deeper detail, read the linked file.
 ---
 
 A varro dashboard is a folder under `dashboards/<name>/`:
 
-- `dashboard.md` — overview page, served at `/<name>`
+- `dashboard.md` — overview page, served at `/<name>`, and the index that tells the agent what's in the dashboard
 - `outputs.py` — `@output`-decorated Python functions called by markdown tags
 - Optional: `pages/`, `queries.sql` or `queries/`, query-backed filters
 
 For specific tasks, read the relevant doc:
 
 - Writing a dashboard (markdown syntax, components, filters, the `@output` contract): [authoring.md](authoring.md)
-- Snapshotting a dashboard for inspection without a browser: [snapshots.md](snapshots.md)
+- Viewing a dashboard (URL navigation, browser collaboration, snapshots for offline reading): [viewing.md](viewing.md)
 
 ## Working memory
 

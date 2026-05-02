@@ -276,13 +276,13 @@ def _render_output(
     result = execute_output(dash, output_name, filters, engine)
 
     if expected == "fig" and isinstance(result, go.Figure):
-        return Figure(result)
+        return Figure(result, output_name)
     if expected == "table" and isinstance(result, pd.DataFrame):
-        return DataTable(result, table_attrs)
+        return DataTable(result, table_attrs, output_name)
     if expected == "table" and is_styler(result):
-        return StyledTable(result)
+        return StyledTable(result, output_name)
     if expected == "metric" and isinstance(result, Metric):
-        return MetricCard(result)
+        return MetricCard(result, output_name)
 
     return ErrorCard(
         f"Output {output_name!r} returned {type(result).__name__}, expected {expected}"

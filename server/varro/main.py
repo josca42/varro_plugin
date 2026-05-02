@@ -193,19 +193,22 @@ async def jupyter(
 
 @mcp.tool()
 async def dashboard_snapshot(url: str) -> list[TextContent]:
-    """Snapshot a running dashboard: execute its outputs and write figures,
-    tables, and metrics to disk. The dashboard HTTP server must already be
-    serving at `url` — this tool does not start it.
+    """Snapshot a dashboard view for offline reading: execute its outputs and
+    write figures, tables, and metrics to disk. The URL is a state descriptor
+    (path + filters); outputs run in-process here, so the dashboard HTTP
+    server does not need to be running.
 
     Args:
-        url: Full dashboard URL including any filters as query params, e.g.
-             `http://127.0.0.1:5011/titanic?sex=female&pclass=3`.
+        url: Dashboard URL including any filters as query params, e.g.
+             `http://127.0.0.1:5011/titanic/survival?sex=female`. The host
+             is decorative — only the path and query are read.
 
-    Writes to `dashboards/<name>/snapshots/<filter_key>/` where `filter_key`
-    is `_` for no filters, or `key1=val1,key2=val2` sorted alphabetically
-    (filters at their default value are dropped). Contents:
-    `figures/<output>.png`, `tables/<output>.parquet`, `metrics.json`, and
-    a `<YYYY-MM-DD>.date` marker.
+    Writes to `dashboards/<name>/snapshots/<page>/<filter_key>/`, mirroring
+    the URL. `<page>` is the page slug or `_` for the overview; `<filter_key>`
+    is `_` for no filters or `key1=val1,key2=val2` sorted alphabetically with
+    defaults dropped. Contents: `figures/<output>.png`,
+    `tables/<output>.parquet`, `metrics.json`, and a `<YYYY-MM-DD>.date`
+    marker.
 
     Returns a text summary of paths and counts written, plus an `errors:`
     section listing any per-output failures. Use Read to inspect the PNGs,
@@ -215,6 +218,7 @@ async def dashboard_snapshot(url: str) -> list[TextContent]:
     lines = [
         f"Snapshot written: {summary['path']}",
         f"URL: {summary['url']}",
+        f"page: {summary['page']}",
         f"filter_key: {summary['filter_key']}",
         f"metrics: {summary['metrics']}",
         f"tables: {summary['tables']}",

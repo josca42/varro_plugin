@@ -27,6 +27,15 @@ Dashboard URLs are content-centric:
 
 `_`, `api`, `assets`, `favicon.ico`, and `static` are reserved dashboard names. The landing page template supports `{{ dashboards }}` to expand into a list of dashboard links.
 
+## dashboard.md as index
+
+`dashboard.md` is the dashboard's entry document and serves two audiences:
+
+- **Users** see it rendered as the overview page at `/<name>`.
+- **Agents** read it as the index — what figures, tables, metrics, and filters exist, plus the prose tying them together.
+
+Write it to be useful in both modes. The narrative around the figures (what they mean, what to look for, how filters reshape them) is what lets future sessions navigate the dashboard without re-running the analysis.
+
 ## dashboard.md syntax
 
 Regular markdown, plus `:::` container fences and `<tag />` self-closing components. Markdown blocks are rendered client-side and styled by the dashboard CSS.
@@ -175,4 +184,4 @@ where (:region is null or region = :region)
 
 ## After authoring
 
-Snapshot the dashboard to verify outputs render and to inspect them without a browser: see [snapshots.md](snapshots.md).
+View the dashboard in the browser to verify outputs render, or snapshot it for offline reading: see [viewing.md](viewing.md).

@@ -134,7 +134,7 @@ def table_payload(df: pd.DataFrame, opts: TableOptions) -> dict[str, Any]:
     }
 
 
-def DataTable(df: pd.DataFrame, attrs: dict[str, str]) -> Any:
+def DataTable(df: pd.DataFrame, attrs: dict[str, str], output_name: str) -> Any:
     opts = parse_table_attrs(attrs)
     payload = table_payload(df, opts)
     data = json.dumps(payload, default=str, separators=(",", ":"))
@@ -144,14 +144,16 @@ def DataTable(df: pd.DataFrame, attrs: dict[str, str]) -> Any:
         x_data=f"varroTable({data})",
         cls="card table-card",
         data_slot="varro-table",
+        data_output_name=output_name,
     )
 
 
-def StyledTable(styler: Any) -> Any:
+def StyledTable(styler: Any, output_name: str) -> Any:
     return Div(
         Div(NotStr(styler.to_html()), cls="table-wrap varro-styled-table"),
         cls="card table-card",
         data_slot="varro-styled-table",
+        data_output_name=output_name,
     )
 
 

@@ -64,6 +64,8 @@ def _placeholder(
         hx_swap="innerHTML",
         id=f"placeholder-{output_type}-{output_name}-{digest}",
         cls="output-slot",
+        data_output_name=output_name,
+        data_output_type=output_type,
     )
 
 

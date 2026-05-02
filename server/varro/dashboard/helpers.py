@@ -41,7 +41,7 @@ PLOTLY_LAYOUT = dict(
 )
 
 
-def Figure(fig: Any) -> Any:
+def Figure(fig: Any, output_name: str) -> Any:
     fig.update_layout(
         **{key: value for key, value in PLOTLY_LAYOUT.items() if key not in fig.layout}
     )
@@ -51,7 +51,12 @@ def Figure(fig: Any) -> Any:
         config={"displayModeBar": False, "responsive": True},
         default_width="100%",
     )
-    return Div(Div(NotStr(html), cls="card-body"), cls="card chart-card")
+    return Div(
+        Div(NotStr(html), cls="card-body"),
+        cls="card chart-card",
+        data_slot="varro-figure",
+        data_output_name=output_name,
+    )
 
 
 def format_metric(value: Any, fmt: str) -> str:
@@ -66,7 +71,7 @@ def format_metric(value: Any, fmt: str) -> str:
     return f"{int(value):,}"
 
 
-def MetricCard(m: Metric) -> Any:
+def MetricCard(m: Metric, output_name: str) -> Any:
     children = [
         Div(m.label, cls="kpi-label"),
         Div(format_metric(m.value, m.format), cls="kpi-value"),
@@ -80,7 +85,12 @@ def MetricCard(m: Metric) -> Any:
         children.append(Div(change_txt, cls=cls))
     elif m.change_label:
         children.append(Div(m.change_label, cls="kpi-delta"))
-    return Div(*children, cls="kpi", data_slot="metric-value")
+    return Div(
+        *children,
+        cls="kpi",
+        data_slot="metric-value",
+        data_output_name=output_name,
+    )
 
 
 def _option_value_label(option: Any) -> tuple[str, str]:
@@ -110,6 +120,7 @@ def FilterInput(
             Label(label_text, fr=f.name),
             Select(*option_els, name=f.name, id=f.name, cls="select"),
             cls="filter-field",
+            data_filter_name=f.name,
         )
 
     if isinstance(f, DateRangeFilter):
@@ -121,6 +132,7 @@ def FilterInput(
             Input(type="date", name=fk, id=fk, value=from_val or "", cls="input"),
             Input(type="date", name=tk, id=tk, value=to_val or "", cls="input"),
             cls="filter-field",
+            data_filter_name=f.name,
         )
 
     if isinstance(f, CheckboxFilter):
@@ -135,6 +147,7 @@ def FilterInput(
             ),
             Label(label_text, fr=f.name),
             cls="filter-field",
+            data_filter_name=f.name,
         )
 
     return Div()
