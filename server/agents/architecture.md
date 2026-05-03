@@ -1,6 +1,6 @@
 # Architecture
 
-MCP server giving Claude Code a data-science setup: stateful IPython + file-driven dashboards. The MCP server and the dashboard server are separate processes — the MCP server does not start, own, or depend on the dashboard. The snapshot tool parses a dashboard URL as a state descriptor (path + filters) and runs outputs in-process; it never fetches the URL. The dashboard HTTP server is only needed for browser viewing.
+MCP server giving codex/claude code a data-science setup: stateful IPython + file-driven dashboards. The MCP server and the dashboard server are separate processes — the MCP server does not start, own, or depend on the dashboard. The snapshot tool parses a dashboard URL as a state descriptor (path + filters) and runs outputs in-process; it never fetches the URL. The dashboard HTTP server is only needed for browser viewing.
 
 ## Entry point
 

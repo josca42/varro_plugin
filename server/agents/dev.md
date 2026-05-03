@@ -18,7 +18,7 @@ Dashboard CSS is maintained directly in `varro/dashboard/static/dashboard.css`.
 uv run python -m varro.main
 ```
 
-This is what MCP clients (Claude Code, Codex) invoke via their config. The plugin's `.mcp.json` runs this with `--project ${CLAUDE_PLUGIN_ROOT}/server`. The MCP server does not start the dashboard — the snapshot tool takes a full URL and relies on the dashboard already running.
+This is what MCP clients (Claue code, Codex) invoke via their config. The plugin's `.mcp.json` runs this with `--project ${CLAUDE_PLUGIN_ROOT}/server`. The MCP server does not start the dashboard — the snapshot tool takes a full URL and relies on the dashboard already running.
 
 ## Env vars
 

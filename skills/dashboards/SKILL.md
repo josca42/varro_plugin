@@ -20,4 +20,4 @@ Per-dashboard notes live at `dashboards/<name>/agents/`. Treat them as the same 
 
 - Create `dashboards/<name>/agents/index.md` only when there is something dashboard-specific worth persisting: data quirks, business rules, design decisions, surprising findings, things that took you time to discover. Do not pre-create empty notes.
 - Update notes as you learn. Remove notes that go stale.
-- Future Claude Code sessions on the same dashboard should read these notes first.
+- Future codex/claude code sessions on the same dashboard should read these notes first.

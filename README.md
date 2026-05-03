@@ -1,6 +1,6 @@
 # varro
 
-A Claude Code plugin that gives Claude a small data-analysis scaffold:
+A codex/claude code plugin that gives Claude a small data-analysis scaffold:
 
 - `mcp__varro__sql` — query a SQLAlchemy database, optionally store the result as a named DataFrame in a persistent kernel
 - `mcp__varro__jupyter` — run Python in a stateful IPython kernel that's file-backed under `notebooks/<name>.py` (Jupytext percent format)
@@ -10,7 +10,7 @@ Plus three skills (`varro:dashboards`, `varro:sql`, `varro:jupyter`) that docume
 
 ## Why a plugin
 
-The plugin is intentionally minimal. Treat it as a starting prompt for data-analysis work, not a finished product. Skills and code together describe the conventions; ask Claude Code to grow the plugin to fit your setup — add a Python dependency, add a dashboard component, write a new SKILL.md, etc.
+The plugin is intentionally minimal. Treat it as a starting prompt for data-analysis work, not a finished product. Skills and code together describe the conventions; ask codex/claude code to grow the plugin to fit your setup — add a Python dependency, add a dashboard component, write a new SKILL.md, etc.
 
 ## Install
 

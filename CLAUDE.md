@@ -1,6 +1,6 @@
 # Plugin notes
 
-Varro is a Claude Code plugin: SQL, persistent Jupyter, and markdown-based dashboards. The MCP server, dashboard server, and supporting Python all ship inside the plugin.
+Varro is a codex/claude code plugin: SQL, persistent Jupyter, and markdown-based dashboards. The MCP server, dashboard server, and supporting Python all ship inside the plugin.
 
 ## Where to look
 
