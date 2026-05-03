@@ -1,6 +1,6 @@
 # varro
 
-A codex/claude code plugin that gives Claude a small data-analysis scaffold:
+A codex/claude code plugin that gives the agent a small data-analysis scaffold:
 
 - `mcp__varro__sql` — query a SQLAlchemy database, optionally store the result as a named DataFrame in a persistent kernel
 - `mcp__varro__jupyter` — run Python in a stateful IPython kernel that's file-backed under `notebooks/<name>.py` (Jupytext percent format)

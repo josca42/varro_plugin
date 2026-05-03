@@ -29,8 +29,6 @@ pio.templates["plotly_white"].layout.legend = dict(
     xanchor="center",
     x=0.5,
 )
-
-import geopandas as gpd
 """
 
 
