@@ -1,0 +1,22 @@
+{
+  "name": "varro",
+  "version": "0.1.0",
+  "description": "SQL, persistent Jupyter, and markdown dashboard tooling for Codex.",
+  "repository": "https://github.com/josca42/varro_plugin",
+  "license": "MIT",
+  "keywords": ["sql", "jupyter", "dashboards", "data analysis"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Varro",
+    "shortDescription": "data analysis setup",
+    "longDescription": "Data analysis scaffold for Codex: SQL, persistent Jupyter, and markdown dashboards. Skills and code are intentionally minimal so users grow the plugin to fit their setup.",
+    "developerName": "josca42",
+    "category": "data analysis",
+    "capabilities": ["Read", "Write"],
+    "defaultPrompt": [
+      "Use Varro to query SQL and analyze data in a persistent notebook.",
+      "Use Varro to create or inspect a markdown dashboard."
+    ]
+  }
+}

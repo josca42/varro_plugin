@@ -10,9 +10,9 @@ Varro is a codex/claude code plugin: SQL, persistent Jupyter, and markdown-based
 
 ## The code is part of the plugin
 
-Server code is editable in place at `${CLAUDE_PLUGIN_ROOT}/server/`. Components, CSS, dashboard helpers — change them directly when the user asks. Plugin reinstall overwrites local edits, so for persistent forks the user should install from a clone they control.
+Server code is editable in place under `server/`. Components, CSS, dashboard helpers — change them directly when the user asks. Plugin reinstall overwrites local edits, so for persistent forks the user should install from a clone they control.
 
-`uv run --project ${CLAUDE_PLUGIN_ROOT}/server <cmd>` invokes commands inside the plugin's environment. uv auto-installs dependencies on first run, so no separate setup step is needed.
+`uv run --project ./server <cmd>` invokes commands inside the plugin's environment. uv auto-installs dependencies on first run, so no separate setup step is needed.
 
 ## Updating notes
 
