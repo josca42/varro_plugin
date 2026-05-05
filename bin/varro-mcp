@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+plugin_root="${VARRO_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:-}}}"
+
+if [[ -z "$plugin_root" ]]; then
+  script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+  plugin_root="$(cd -- "$script_dir/.." && pwd)"
+fi
+
+exec uv run --project "$plugin_root/server" python -m varro.main

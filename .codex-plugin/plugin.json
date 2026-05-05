@@ -10,7 +10,7 @@
   "interface": {
     "displayName": "Varro",
     "shortDescription": "data analysis setup",
-    "longDescription": "Data analysis scaffold for Codex: SQL, persistent Jupyter, and markdown dashboards. Skills and code are intentionally minimal so users grow the plugin to fit their setup.",
+    "longDescription": "Data analysis scaffold for Codex: SQL, persistent Jupyter, and markdown dashboards. Skills and code are intentionally minimal so users grow the plugin to fit their setup. Always start with reading the workflow skill.",
     "developerName": "josca42",
     "category": "data analysis",
     "capabilities": ["Read", "Write"],

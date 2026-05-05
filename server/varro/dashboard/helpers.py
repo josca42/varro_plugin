@@ -32,10 +32,10 @@ PLOTLY_LAYOUT = dict(
     ),
     legend=dict(
         orientation="h",
-        yanchor="bottom",
-        y=1.02,
-        xanchor="left",
-        x=0,
+        yanchor="top",
+        y=-0.15,
+        xanchor="center",
+        x=0.5,
         font=dict(size=11),
     ),
 )
@@ -100,9 +100,7 @@ def _option_value_label(option: Any) -> tuple[str, str]:
     return value, "All" if value == "all" else value
 
 
-def FilterInput(
-    f: Filter, current: Any, options: list[Any] | None = None
-) -> Any:
+def FilterInput(f: Filter, current: Any, options: list[Any] | None = None) -> Any:
     label_text = f.label or f.name
 
     if isinstance(f, SelectFilter):

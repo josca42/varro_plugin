@@ -41,7 +41,7 @@ cd varro_plugin
 codex plugin marketplace add .
 ```
 
-Then install or refresh **Varro** from `/plugins`. The plugin's MCP server runs via `uv run --project ./server python -m varro.main`.
+Then install or refresh **Varro** from `/plugins`. The plugin's MCP server runs through `bin/varro-mcp`, which resolves the installed plugin root and then runs `uv run --project <plugin-root>/server python -m varro.main`.
 
 ## Workspace layout (the user side)
 

@@ -1,13 +1,7 @@
 {
   "varro": {
-    "command": "uv",
-    "args": [
-      "run",
-      "--project",
-      "./server",
-      "python",
-      "-m",
-      "varro.main"
-    ]
+    "command": "/Users/josca/plugins/varro/bin/varro-mcp",
+    "startup_timeout_sec": 60,
+    "tool_timeout_sec": 120
   }
 }
