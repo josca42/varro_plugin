@@ -1,16 +1,56 @@
-# varro
+<p align="center">
+  <img src="server/varro/dashboard/static/varro_logo_white_bg.png" alt="Varro" width="360" />
+</p>
 
-A Codex plugin that gives the agent a small data-analysis scaffold:
+# Varro
 
-- `mcp__varro__sql` — query a SQLAlchemy database, optionally store the result as a named DataFrame in a persistent kernel
-- `mcp__varro__jupyter` — run Python in a stateful IPython kernel that's file-backed under `notebooks/<name>.py` (Jupytext percent format)
-- `mcp__varro__dashboard_snapshot` — execute a markdown-driven dashboard's outputs and dump figures, tables, and metrics to disk
+**Obsidian for data analysis** — a small Codex / Claude code plugin that wraps the everyday data tasks in good defaults and lets the agent grow them to fit your project.
 
-Plus three skills (`varro:dashboards`, `varro:sql`, `varro:jupyter`) that document how to use each tool and how to author dashboards.
+## Thesis
 
-## Why a plugin
+Inspired by answer.ai and pi: Uses fasthtml, htmx and various code snippet from answer.ai repos. Is intented to be a small, opinionated core and that you can grow to fit your needs. The plugin ships a scaffold —
 
-The plugin is intentionally minimal. Treat it as a starting prompt for data-analysis work, not a finished product. Skills and code together describe the conventions; ask Codex/Claude code to grow the plugin to fit your setup — add a Python dependency, add a dashboard component, write a new SKILL.md, etc.
+- a stateful Python kernel,
+- a SQL tool wired to your database,
+- a markdown → dashboard rendering surface,
+
+— and nothing more. Components, CSS, helpers, even the tools themselves are editable in place. When you need something different, ask the agent to change it. Skills and code together describe the conventions; the plugin is a starting prompt, not a finished product.
+
+## Stack
+
+- **FastHTML + HTMX** — server-rendered dashboard fragments, filter swaps without full page reloads
+- **Alpine.js** for client-side tab state
+- **Plotly** charts, **Kaleido** for PNG export in snapshots
+- Plain [`dashboard.css`](server/varro/dashboard/static/dashboard.css) — change a token, restyle the whole thing
+
+## Three tools
+
+- **`mcp__varro__sql`** — query a SQLAlchemy database, optionally store the result as a named DataFrame in the persistent kernel
+- **`mcp__varro__jupyter`** — run Python in a stateful IPython kernel, file-backed under `notebooks/<name>.py` (Jupytext percent format)
+- **`mcp__varro__dashboard_snapshot`** — take a dashboard URL, run its outputs, and dump figures, tables, and metrics to disk so the agent can read them without screenshots
+
+Plus four skills (`varro:dashboards`, `varro:sql`, `varro:jupyter`, `varro:workflow`) that document how to use each tool and how to author dashboards.
+
+## Markdown → dashboard
+
+Dashboards are markdown, extended with the Docusaurus admonition syntax (`:::`) for layout and self-closing component tags for content:
+
+```md
+:::filters
+<filter-select name="region" options="data:sales.csv:region" default="all" />
+:::
+
+:::grid cols=2
+<metric name="total_revenue" />
+<fig name="revenue_by_month" />
+:::
+```
+
+Each `<fig />` / `<table />` / `<metric />` dispatches to an `@output`-decorated Python function in `outputs.py`. The return type chooses the renderer — `Metric`, `pd.DataFrame`, `Styler`, or Plotly figure.
+
+The dashboard URL (e.g. `/<name>?region=east`) is the canonical state descriptor: the same string drives the live browser view and the offline `dashboard_snapshot` tool.
+
+Authoring reference: [skills/dashboards/authoring.md](skills/dashboards/authoring.md).
 
 ## Install in Codex
 

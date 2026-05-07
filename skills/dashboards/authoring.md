@@ -10,7 +10,7 @@ dashboards/<name>/
   outputs/          # larger output source, mutually exclusive with outputs.py
   queries.sql       # optional named SQL datasets
   queries/          # optional SQL dataset files, mutually exclusive with queries.sql
-  agents/           # working-memory notes (created on demand by Claude)
+  agents/           # working-memory notes (created on demand by the agent)
 ```
 
 Use either `outputs.py` or `outputs/`, never both. `dashboard.md` is required.

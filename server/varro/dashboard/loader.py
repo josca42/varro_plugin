@@ -243,9 +243,7 @@ def _load_outputs(folder: Path) -> dict[str, Callable]:
     return dict(outputs)
 
 
-def _outputs_signature(
-    folder: Path, outputs_file: Path, outputs_dir: Path
-) -> tuple:
+def _outputs_signature(folder: Path, outputs_file: Path, outputs_dir: Path) -> tuple:
     if outputs_file.exists():
         return ("file", _file_signature(outputs_file))
     if outputs_dir.exists():
