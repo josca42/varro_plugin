@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="server/varro/dashboard/static/varro_logo_white_bg.png" alt="Varro" width="360" />
-</p>
-
 # Varro
 
 **Obsidian for data analysis** — a small Codex / Claude code plugin that wraps the everyday data tasks in good defaults and lets the agent grow them to fit your project.
