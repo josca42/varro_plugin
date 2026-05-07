@@ -4,7 +4,7 @@
 
 ## Thesis
 
-Inspired by answer.ai and pi: Uses fasthtml, htmx and various code snippet from answer.ai repos. Is intented to be a small, opinionated core and that you can grow to fit your needs. The plugin ships a scaffold —
+Inspired by answer.ai and pi: Uses fasthtml, htmx and various code snippet from answer.ai repos. Is intented to be a small, opinionated core that codex/claude code can change to fit your needs. The plugin ships a scaffold:
 
 - a stateful Python kernel,
 - a SQL tool wired to your database,
