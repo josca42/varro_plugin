@@ -5,10 +5,10 @@ The MCP server and the dashboard server are independent processes. Start the das
 ## Dashboard server
 
 ```
-uv run varro
+uv run varro --project-dir .
 ```
 
-Options: `--host 127.0.0.1 --port 5011 --dir dashboards`. Then browse `http://127.0.0.1:5011/<name>`. Pick any free port — port-bind errors surface directly to stderr, so try another port if 5011 is taken. Port 5001 is avoided (sibling project sometimes holds it).
+Options: `--host 127.0.0.1 --port 5011`. Then browse `http://127.0.0.1:5011/<name>`. Pick any free port — port-bind errors surface directly to stderr, so try another port if 5011 is taken. Port 5001 is avoided (sibling project sometimes holds it).
 
 Dashboard CSS is maintained directly in `varro/dashboard/static/dashboard.css`.
 
@@ -22,10 +22,9 @@ This is what MCP clients (Claude Code, Codex) invoke via their config. The plugi
 
 ## Env vars
 
-- `VARRO_DASHBOARDS_DIR` (default `./dashboards`) — where dashboard folders live on disk (used by snapshot for output paths)
-- `VARRO_NOTEBOOKS_DIR` (default `./notebooks`) — where notebook `.py` files live
-- SQL connection config lives at `{dashboards_dir}/.varro/sql_connection.txt`; first non-empty, non-comment line is used by the MCP `sql` tool and SQL-backed dashboards.
-- Data folder convention is `{dashboards_dir}/../data` (sibling of dashboards)
+- `VARRO_PROJECT_DIR` (default `.` for MCP tools) — project root containing `dashboards/`, `notebooks/`, `.varro/`, and `data/`
+- SQL connection config lives at `{project_dir}/.varro/sql_connection.txt`; first non-empty, non-comment line is used by the MCP `sql` tool and SQL-backed dashboards.
+- Data folder convention is `{project_dir}/data`
 
 ## Taking a snapshot programmatically
 
@@ -35,7 +34,7 @@ from varro.dashboard.snapshot import take_snapshot
 
 s = take_snapshot(
     "http://127.0.0.1:5011/demo?region=East",
-    Path("dashboards"),
+    Path("."),
 )
 print(s)
 ```

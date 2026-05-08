@@ -1,12 +1,7 @@
-from __future__ import annotations
-
-import os
 import re
 from pathlib import Path
 
-NOTEBOOKS_DIR = Path(
-    os.environ.get("VARRO_NOTEBOOKS_DIR", Path.cwd() / "notebooks")
-).resolve()
+from varro.constants import NOTEBOOKS_DIR
 
 _CELL_RE = re.compile(r"^# %%.*$", re.MULTILINE)
 

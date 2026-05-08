@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 import shutil
 from datetime import date
 from pathlib import Path
@@ -60,9 +60,10 @@ def _parse_dashboard_url(url: str) -> tuple[str, str | None, dict[str, str]]:
     return name, page_slug, raw
 
 
-def take_snapshot(url: str, dashboards_dir: Path) -> dict[str, Any]:
+def take_snapshot(url: str, project_dir: Path) -> dict[str, Any]:
     name, page_slug, raw_params = _parse_dashboard_url(url)
-    dashboards_dir = Path(dashboards_dir)
+    project_dir = Path(project_dir).resolve()
+    dashboards_dir = project_dir / "dashboards"
     folder = dashboards_dir / name
     if not folder.exists():
         raise FileNotFoundError(f"Dashboard folder {folder} not found")
@@ -89,7 +90,7 @@ def take_snapshot(url: str, dashboards_dir: Path) -> dict[str, Any]:
     for i, ref in enumerate(outputs_list):
         try:
             engine = (
-                get_sql_engine(dashboards_dir)
+                get_sql_engine(project_dir)
                 if output_query_names(dash, ref.name)
                 else None
             )

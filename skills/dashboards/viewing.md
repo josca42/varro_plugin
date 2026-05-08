@@ -36,7 +36,7 @@ Stable selectors for browser automation:
 The browser surface needs the dashboard HTTP server. If `http://127.0.0.1:5011/_/health` does not respond, start the server in the background before navigating:
 
 ```
-uv run --project ${CLAUDE_PLUGIN_ROOT}/server varro --dir dashboards
+uv run --project ${CLAUDE_PLUGIN_ROOT}/server varro --project-dir .
 ```
 
 Default host/port is `127.0.0.1:5011`. uv auto-installs dependencies on first run.

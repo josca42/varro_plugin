@@ -143,15 +143,18 @@ def _select_options(
                 raise ValueError(
                     f"Unknown options query {query_name!r} for filter {f.name!r}"
                 )
-            out[f.name] = execute_options_query(query, get_sql_engine(dashboards_dir))
+            out[f.name] = execute_options_query(
+                query, get_sql_engine(dashboards_dir.parent)
+            )
             continue
 
         out[f.name] = resolve_select_options(spec, root)
     return out
 
 
-def build_app(dashboards_dir: Path) -> FastHTML:
-    dashboards_dir = Path(dashboards_dir)
+def build_app(project_dir: Path) -> FastHTML:
+    project_dir = Path(project_dir).resolve()
+    dashboards_dir = project_dir / "dashboards"
     index_path = _ensure_index_file(dashboards_dir)
 
     hdrs = (
@@ -273,7 +276,7 @@ def _render_output(
     filters = parse_filters_from_query(dash.filters, req.query_params)
     table_attrs = _component_attrs(req.query_params)
     engine = (
-        get_sql_engine(dashboards_dir)
+        get_sql_engine(dashboards_dir.parent)
         if output_query_names(dash, output_name)
         else None
     )

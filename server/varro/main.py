@@ -2,9 +2,7 @@ import asyncio
 import base64
 import io
 import logging
-import os
 import sys
-from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -13,6 +11,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.types import ImageContent, TextContent
 
 from varro import notebook as nb
+from varro.constants import PROJECT_DIR
 from varro.dashboard import take_snapshot
 from varro.shell import JUPYTER_INITIAL_IMPORTS, get_shell
 from varro.sql import run_sql
@@ -25,10 +24,6 @@ shell = None
 current_notebook = ""
 exec_lock = asyncio.Lock()
 JUPYTER_MAX_PIXELS = 600_000
-
-DASHBOARDS_DIR = Path(
-    os.environ.get("VARRO_DASHBOARDS_DIR", Path.cwd() / "dashboards")
-).resolve()
 
 mcp = FastMCP("varro")
 
@@ -87,10 +82,11 @@ async def _render(name: str) -> list[TextContent | ImageContent]:
 
 
 @mcp.tool()
-async def sql(query: str, df_name: str | None = None) -> list[TextContent]:
-    """Run a SQL query against the configured database (SQLAlchemy URL at
-    `dashboards/.varro/sql_connection.txt`; raises if the file is missing —
-    see the SQL skill for setup).
+async def sql(
+    query: str,
+    df_name: str | None = None,
+) -> list[TextContent]:
+    """Run a SQL query against the configured database.
 
     Two modes, chosen by `df_name`:
     - Investigation (`df_name=None`): no kernel side effects, no notebook
@@ -145,9 +141,6 @@ async def jupyter(
 ) -> list[TextContent | ImageContent]:
     """Stateful IPython kernel. Each call runs `code` as a new cell, with
     state persisting across calls.
-
-    Successful cells are appended to `notebooks/<current>.py` (Jupytext
-    "percent" format); failed cells raise and are not appended.
 
     Pass `notebook="<name>"` to switch to (or create) a notebook — this
     resets the kernel and replays the target file, so only switch when you
@@ -214,7 +207,7 @@ async def dashboard_snapshot(url: str) -> list[TextContent]:
     section listing any per-output failures. Use Read to inspect the PNGs,
     parquet files, or metrics.json.
     """
-    summary = take_snapshot(url, DASHBOARDS_DIR)
+    summary = take_snapshot(url, PROJECT_DIR)
     lines = [
         f"Snapshot written: {summary['path']}",
         f"URL: {summary['url']}",

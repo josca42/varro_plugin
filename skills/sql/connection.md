@@ -3,10 +3,10 @@
 The varro SQL tool reads its connection string from a single file:
 
 ```
-{VARRO_DASHBOARDS_DIR}/.varro/sql_connection.txt
+{VARRO_PROJECT_DIR}/.varro/sql_connection.txt
 ```
 
-`VARRO_DASHBOARDS_DIR` defaults to `./dashboards` — i.e. the file usually lives at `dashboards/.varro/sql_connection.txt`.
+`VARRO_PROJECT_DIR` defaults to the current working directory — i.e. the file usually lives at `.varro/sql_connection.txt`.
 
 ## File format
 
@@ -50,4 +50,4 @@ Create the file (and parent `.varro/` dir if needed) and try again.
 
 ## Security note
 
-The connection file is plaintext. Add `dashboards/.varro/` to `.gitignore` if the connection string contains real credentials.
+The connection file is plaintext. Add `.varro/` to `.gitignore` if the connection string contains real credentials.

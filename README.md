@@ -22,7 +22,7 @@ Inspired by answer.ai and pi: Uses fasthtml, htmx and various code snippet from 
 ## Three tools
 
 - **`mcp__varro__sql`** — query a SQLAlchemy database, optionally store the result as a named DataFrame in the persistent kernel
-- **`mcp__varro__jupyter`** — run Python in a stateful IPython kernel, file-backed under `notebooks/<name>.py` (Jupytext percent format)
+- **`mcp__varro__jupyter`** — run Python in a stateful IPython kernel, file-backed as `notebooks/<name>.py` (Jupytext percent format)
 - **`mcp__varro__dashboard_snapshot`** — take a dashboard URL, run its outputs, and dump figures, tables, and metrics to disk so the agent can read them without screenshots
 
 Plus four skills (`varro:dashboards`, `varro:sql`, `varro:jupyter`, `varro:workflow`) that document how to use each tool and how to author dashboards.
@@ -85,18 +85,19 @@ The plugin expects a workspace shaped like this:
 
 ```
 your-project/
+├── .varro/
+│   └── sql_connection.txt   # SQLAlchemy URL for mcp__varro__sql
 ├── data/                    # files referenced by dashboards / notebooks
 ├── dashboards/
-│   ├── .varro/
-│   │   └── sql_connection.txt   # SQLAlchemy URL for mcp__varro__sql
 │   └── <name>/
 │       ├── dashboard.md
 │       ├── outputs.py
 │       └── agents/          # working-memory notes (created on demand by the agent)
-└── notebooks/               # auto-created; one .py file per named notebook
+└── notebooks/
+    └── <name>.py            # auto-created named notebooks
 ```
 
-Override paths via `VARRO_DASHBOARDS_DIR` and `VARRO_NOTEBOOKS_DIR` env vars.
+The project root defaults to the current working directory for MCP tools. Set `VARRO_PROJECT_DIR` if the server is launched from elsewhere.
 
 ## Extending the plugin
 

@@ -9,9 +9,10 @@ selection, arguments, and result shape; this file covers usage strategy.
 ## Conventions
 
 - Use `sandbox` for ad-hoc exploration. It is the default; do not pass `notebook=`.
-- For substantive analysis, switch to a named notebook (e.g. `notebook="cohort_analysis"`). The notebook becomes the durable record of the analysis. After the initial switch, omit `notebook=` on subsequent calls — passing it again re-switches and resets the kernel.
+- For substantive analysis, switch to a named notebook (e.g. `notebook="cohort_analysis"`). The notebook becomes the durable record of the analysis. After the initial switch, omit `notebook=` on subsequent calls unless you want to move to a different notebook.
+- Notebook files are written to `<project>/notebooks`. `VARRO_PROJECT_DIR` overrides the project root when the MCP server is launched from elsewhere.
 - Two parallel conversations using the same notebook name will clobber each other's file — use distinct names per conversation.
-- `notebooks/` must be a flat directory; nested paths via `notebook=` are rejected.
+- Notebook names must be flat; nested paths via `notebook=` are rejected.
 - For analysis that stabilises into a reusable view, refactor it into a dashboard (see the [dashboards](../dashboards/SKILL.md) skill).
 
 ## SQL inside cells
@@ -20,4 +21,4 @@ selection, arguments, and result shape; this file covers usage strategy.
 
 ## Recovery
 
-The notebook file is the source of truth for kernel state on replay. If a cell breaks the file, edit `notebooks/<name>.py` directly to fix or delete the offending cell, then switch back to that notebook.
+The notebook file is the source of truth for kernel state on replay. If a cell breaks the file, edit `<project>/notebooks/<name>.py` directly to fix or delete the offending cell, then switch back to that notebook.

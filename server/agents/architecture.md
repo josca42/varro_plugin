@@ -5,7 +5,7 @@ MCP server giving codex/claude code a data-science setup: stateful IPython + fil
 ## Entry point
 
 [varro/main.py](../varro/main.py) — single `FastMCP` instance named `varro`. No lifespan. Module-level initialization only:
-- `_switch("sandbox")` boots a fresh IPython shell, runs `JUPYTER_INITIAL_IMPORTS`, replays `notebooks/sandbox.py`, and points `current_notebook` at it
+- `_switch("sandbox")` boots a fresh IPython shell, runs `JUPYTER_INITIAL_IMPORTS`, replays `<project>/notebooks/sandbox.py`, and points `current_notebook` at it
 - `exec_lock` for serializing jupyter cell execution
 
 The dashboard server runs separately — see [dev.md](dev.md).
@@ -38,7 +38,7 @@ dashboards/index.md         →  Jinja2 markdown template                →  `/
 | `helpers.py` | Small FastHTML render helpers: `Figure`, `MetricCard`, `FilterInput`, `format_metric` |
 | `tables.py` | Rich `<table />` support: attrs, DataFrame view, raw/display payload, Alpine controller, Styler rendering |
 | `components.py` | `render_ast` — walks AST, emits FastHTML nodes for the dashboard shell. Placeholders lazy-load via HTMX |
-| `server.py` | `build_app(dashboards_dir)` — creates `dashboards/index.md` if missing, serves `/`, root-level dashboard/page routes, `/_/static`, and `/{dashboard}/_/...` fragment routes |
+| `server.py` | `build_app(project_dir)` — creates `dashboards/index.md` if missing, serves `/`, root-level dashboard/page routes, `/_/static`, and `/{dashboard}/_/...` fragment routes |
 | `snapshot.py` | `take_snapshot` — parses URL as state descriptor (no fetch), runs page outputs, writes `snapshots/<page>/<filter_key>/` |
 | `../sql.py` | Shared local SQLAlchemy connection-file engine helper |
 
