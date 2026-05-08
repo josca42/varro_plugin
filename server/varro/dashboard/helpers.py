@@ -16,7 +16,8 @@ PLOTLY_LAYOUT = dict(
     font=dict(family="Inter, system-ui, sans-serif", size=11, color="#52525b"),
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    margin=dict(l=44, r=16, t=24, b=40),
+    margin=dict(l=44, r=16, t=48, b=40),
+    title=dict(y=0.96, yanchor="top", automargin=True),
     bargap=0.45,
     xaxis=dict(
         showgrid=False,
@@ -42,9 +43,14 @@ PLOTLY_LAYOUT = dict(
 
 
 def Figure(fig: Any, output_name: str) -> Any:
+    layout = fig.layout.to_plotly_json()
     fig.update_layout(
-        **{key: value for key, value in PLOTLY_LAYOUT.items() if key not in fig.layout}
+        **{key: value for key, value in PLOTLY_LAYOUT.items() if key not in layout}
     )
+    if fig.layout.title.text:
+        fig.update_layout(
+            title={**PLOTLY_LAYOUT["title"], **fig.layout.title.to_plotly_json()}
+        )
     html = fig.to_html(
         include_plotlyjs=False,
         full_html=False,
