@@ -79,6 +79,8 @@ codex plugin marketplace add .
 
 Then install or refresh **Varro** from `/plugins`. The plugin's MCP server runs through `bin/varro-mcp`, which resolves the installed plugin root and then runs `uv run --project <plugin-root>/server python -m varro.main`.
 
+The local marketplace entry points at `plugins/varro`, a symlink back to the repo root. That keeps Codex's installer happy even if your checkout directory is named something other than `varro`.
+
 ## Workspace layout (the user side)
 
 The plugin expects a workspace shaped like this:

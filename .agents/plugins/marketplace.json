@@ -8,7 +8,7 @@
       "name": "varro",
       "source": {
         "source": "local",
-        "path": "./"
+        "path": "./plugins/varro"
       },
       "policy": {
         "installation": "AVAILABLE",

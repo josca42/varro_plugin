@@ -6,11 +6,11 @@ The repo root is the Codex plugin root. Required plugin metadata lives at `.code
 
 ## Portable MCP config
 
-Root `.mcp.json` is a direct Codex stdio server map. It should launch `./bin/varro-mcp`, not call `uv --project ./server` directly, because Codex may start MCP servers from the user's workspace rather than the installed plugin root. The wrapper resolves the plugin root from its own path and then runs `uv run --project <plugin-root>/server python -m varro.main`.
+Root `.mcp.json` is a direct Codex stdio server map. It should launch `./bin/varro-mcp`, not a user-specific absolute path or `uv --project ./server` directly, because Codex may start MCP servers from the user's workspace rather than the installed plugin root. The wrapper resolves the plugin root from its own path, or from `CODEX_PLUGIN_ROOT` when Codex provides it, and then runs `uv run --project <plugin-root>/server python -m varro.main`.
 
 ## Repo marketplace
 
-The public marketplace file lives at `.agents/plugins/marketplace.json`. Its `source.path` is `./` because the plugin lives at the repository root, not under a `plugins/` subdirectory.
+The public marketplace file lives at `.agents/plugins/marketplace.json`. Its `source.path` is `./plugins/varro`, backed by the `plugins/varro -> ..` symlink. Codex's plugin install API expects a source path whose final directory name matches the plugin name (`varro`); the symlink keeps this true even when the checkout folder is named `varro_plugin`.
 
 ## Local Codex Desktop testing
 
