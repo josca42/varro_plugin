@@ -12,6 +12,10 @@ Inspired by answer.ai and pi: Uses fasthtml, htmx and various code snippet from 
 
 — and nothing more. Components, CSS, helpers, even the tools themselves are editable in place. When you need something different, ask the agent to change it. Skills and code together describe the conventions; the plugin is a starting prompt, not a finished product.
 
+## Install
+
+Probably easiest installed in codex desktop app by using the marketplace git repo https://github.com/josca42/varro_marketplace.git
+
 ## Stack
 
 - **FastHTML + HTMX** — server-rendered dashboard fragments, filter swaps without full page reloads
