@@ -1,7 +1,9 @@
 {
-  "varro": {
-    "command": "./bin/varro-mcp",
-    "startup_timeout_sec": 60,
-    "tool_timeout_sec": 120
+  "mcpServers": {
+    "varro": {
+      "command": "./bin/varro-mcp",
+      "startup_timeout_sec": 60,
+      "tool_timeout_sec": 120
+    }
   }
 }

@@ -2,6 +2,9 @@
   "name": "varro",
   "version": "0.1.0",
   "description": "SQL, persistent Jupyter, and markdown dashboard tooling for Codex.",
+  "author": {
+    "name": "josca42"
+  },
   "repository": "https://github.com/josca42/varro_plugin",
   "license": "MIT",
   "keywords": ["sql", "jupyter", "dashboards", "data analysis"],

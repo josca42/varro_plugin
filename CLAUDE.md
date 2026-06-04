@@ -12,7 +12,7 @@ Varro is a codex/claude code plugin: SQL, persistent Jupyter, and markdown-based
 
 Server code is editable in place at `${CLAUDE_PLUGIN_ROOT}/server/`. Components, CSS, dashboard helpers — change them directly when the user asks. Plugin reinstall overwrites local edits, so for persistent forks the user should install from a clone they control.
 
-`uv run --project ${CLAUDE_PLUGIN_ROOT}/server <cmd>` invokes commands inside the plugin's environment. uv auto-installs dependencies on first run, so no separate setup step is needed.
+`uv run --project ${CLAUDE_PLUGIN_ROOT}/server <cmd>` invokes commands inside the plugin's environment. First-time users should complete [INSTALL.md](INSTALL.md) so `uv` and the required Python version are available before Claude launches the MCP server.
 
 ## Updating notes
 
