@@ -14,7 +14,11 @@ Inspired by answer.ai and pi: Uses fasthtml, htmx and various code snippet from 
 
 ## Install
 
-Probably easiest installed in codex desktop app by using the marketplace git repo https://github.com/josca42/varro_marketplace.git
+Probably easiest installed in Codex Desktop by using the marketplace git repo
+https://github.com/josca42/varro_marketplace.git.
+
+Before first use, run the runtime setup in [INSTALL.md](INSTALL.md). Varro needs
+`uv` on `PATH`, and `uv` needs access to Python 3.13+.
 
 ## Stack
 
@@ -62,7 +66,7 @@ Requirements:
 Add the Varro plugin marketplace:
 
 ```bash
-codex plugin marketplace add josca42/varro_plugin --ref main
+codex plugin marketplace add josca42/varro_marketplace --ref main
 ```
 
 Restart Codex, open `/plugins`, select the Varro marketplace, and install **Varro**.

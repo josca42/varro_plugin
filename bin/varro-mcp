@@ -8,4 +8,12 @@ if [[ -z "$plugin_root" ]]; then
   plugin_root="$(cd -- "$script_dir/.." && pwd)"
 fi
 
+if ! command -v uv >/dev/null 2>&1; then
+  printf '%s\n' \
+    "Varro requires uv, but uv was not found on PATH." \
+    "Run the first-use setup in:" \
+    "  $plugin_root/INSTALL.md" >&2
+  exit 127
+fi
+
 exec uv run --project "$plugin_root/server" python -m varro.main
