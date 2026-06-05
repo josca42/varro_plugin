@@ -6,7 +6,7 @@ The repo root is the Codex plugin root. Required plugin metadata lives at `.code
 
 ## Portable MCP config
 
-Root `.mcp.json` is a Codex MCP server map. It must not use a relative command like `./bin/varro-mcp`, because Codex may start MCP servers from the user's workspace rather than the installed plugin root. It launches `bash` from `PATH`, resolves the plugin root from `VARRO_PLUGIN_ROOT`, `CODEX_PLUGIN_ROOT`, or `CLAUDE_PLUGIN_ROOT`, and then execs `bin/varro-mcp`. The launcher remains responsible for running `uv run --project <plugin-root>/server python -m varro.main`.
+Root `.mcp.json` is a Codex-only MCP server map. It must not use a relative command like `./bin/varro-mcp`, because Codex may start MCP servers from the user's workspace rather than the installed plugin root. It launches `bash -lc` and directly runs `uv run --project "$HOME/.codex/plugins/cache/varro-plugins/varro/0.1.0/server" python -m varro.main`. This deliberately hardcodes the current plugin version; update the path when bumping the plugin version.
 
 ## Repo marketplace
 

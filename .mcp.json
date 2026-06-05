@@ -3,8 +3,8 @@
     "varro": {
       "command": "bash",
       "args": [
-        "-c",
-        "plugin_root=\"${VARRO_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}}\"; if [ -z \"$plugin_root\" ]; then printf '%s\n' \"Varro MCP startup requires a plugin root environment variable.\" \"Expected one of VARRO_PLUGIN_ROOT, CODEX_PLUGIN_ROOT, or CLAUDE_PLUGIN_ROOT.\" \"Refresh or reinstall the Varro plugin from the marketplace.\" >&2; exit 1; fi; launcher=\"$plugin_root/bin/varro-mcp\"; if [ ! -x \"$launcher\" ]; then printf '%s\n' \"Varro MCP launcher was not found or is not executable:\" \"  $launcher\" \"Refresh or reinstall the Varro plugin from the marketplace.\" >&2; exit 127; fi; exec \"$launcher\""
+        "-lc",
+        "exec uv run --project \"$HOME/.codex/plugins/cache/varro-plugins/varro/0.1.0/server\" python -m varro.main"
       ],
       "startup_timeout_sec": 60,
       "tool_timeout_sec": 120
