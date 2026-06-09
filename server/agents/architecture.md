@@ -10,9 +10,9 @@ MCP server giving codex/claude code a data-science setup: stateful IPython + fil
 
 The dashboard server runs separately — see [dev.md](dev.md).
 
-The `varro` CLI entrypoint [varro/cli.py](../varro/cli.py) (registered via `[project.scripts]` in [pyproject.toml](../pyproject.toml)) starts the dashboard HTTP server. The MCP server is started by MCP clients via `python -m varro.main`.
+The `varro` CLI entrypoint [varro/cli.py](../varro/cli.py) (registered via `[project.scripts]` in [pyproject.toml](../pyproject.toml)) starts the dashboard HTTP server. The `varro-mcp` entrypoint starts the MCP server via [varro/main.py](../varro/main.py).
 
-The three MCP tools (`jupyter`, `sql`, `dashboard_snapshot`) are defined in [varro/main.py](../varro/main.py); their docstrings are the canonical contract.
+The MCP tools (`install_packages`, `jupyter`, `sql`, `dashboard_snapshot`) are defined in [varro/main.py](../varro/main.py); their docstrings are the canonical contract.
 
 Notebook persistence detail in [notebooks.md](notebooks.md). State lives in the `.py` file; we do not pickle the live namespace.
 

@@ -6,7 +6,11 @@ The repo root is the Codex plugin root. Required plugin metadata lives at `.code
 
 ## Portable MCP config
 
-Root `.mcp.json` is a Codex-only MCP server map. It must not use a relative command like `./bin/varro-mcp`, because Codex may start MCP servers from the user's workspace rather than the installed plugin root. It launches `bash -lc` and directly runs `uv run --project "$HOME/.codex/plugins/cache/varro-plugins/varro/0.1.0/server" python -m varro.main`. This deliberately hardcodes the current plugin version; update the path when bumping the plugin version.
+Root `.mcp.json` is a Codex-only MCP server map. Codex may start MCP servers from the user's workspace rather than the installed plugin root, so the config launches `bash -lc`, resolves the installed plugin root from `VARRO_PLUGIN_ROOT` / `CODEX_PLUGIN_ROOT` / `CLAUDE_PLUGIN_ROOT` or the local plugin cache, and then executes `bin/varro-mcp`.
+
+The wrapper bootstraps common `uv` install locations onto `PATH`, creates the workspace `.varro/` directory, sets writable `UV_CACHE_DIR` and `MPLCONFIGDIR` defaults under `.varro/`, and starts the MCP server with `uv run --with varro-mcp==<version> varro-mcp`. If `.varro/packages.txt` exists, it is passed through `--with-requirements` so notebook dependencies are resolved on startup.
+
+For local development before publishing a package release, set `VARRO_USE_LOCAL_SERVER=1` or `VARRO_SERVER_PROJECT=/path/to/server` to make `bin/varro-mcp` run the bundled server project instead of the published package.
 
 ## Repo marketplace
 

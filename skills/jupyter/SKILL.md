@@ -15,6 +15,12 @@ selection, arguments, and result shape; this file covers usage strategy.
 - Notebook names must be flat; nested paths via `notebook=` are rejected.
 - For analysis that stabilises into a reusable view, refactor it into a dashboard (see the [dashboards](../dashboards/SKILL.md) skill).
 
+## Packages
+
+If a notebook needs a package that is not already importable, use `mcp__varro__install_packages` with package specifiers such as `["seaborn", "statsmodels>=0.14"]`. It installs into the current Varro environment for immediate use and appends the specs to `<project>/.varro/packages.txt` so the launcher includes them on future starts.
+
+Do not run unrelated shell-level `pip install` commands for notebook dependencies unless the Varro install tool fails and you are explicitly debugging the Python environment.
+
 ## SQL inside cells
 
 `from varro.sql import run_sql` is pre-imported, so jupyter cells can run SQL inline. Use this for **composition** — when SQL is part of a larger Python computation (queries built from Python state, multiple queries combined, query-then-transform in one cell). For single complete SQL statements, the `sql` tool is the canonical entry point — see the [sql skill](../sql/SKILL.md).

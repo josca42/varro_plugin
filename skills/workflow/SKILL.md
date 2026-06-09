@@ -22,3 +22,4 @@ Use Varro as a collaborative analysis loop: brief notebook exploration, quick da
 - Browser is the user-facing surface. Prefer browser navigation and visible dashboard state when explaining findings.
 - Snapshot is for lightweight agent reading and validation. Use it to avoid pulling full-page screenshots into context when a metric, table, or saved figure is enough.
 - SQL is for structured database access when the workspace has a configured connection.
+- `install_packages` is for project-specific Python dependencies. Use it when Jupyter needs an import that is not already available; it persists specs to `.varro/packages.txt`.

@@ -27,11 +27,12 @@ Before first use, run the runtime setup in [INSTALL.md](INSTALL.md). Varro needs
 - **Plotly** charts, **Kaleido** for PNG export in snapshots
 - Plain [`dashboard.css`](server/varro/dashboard/static/dashboard.css) — change a token, restyle the whole thing
 
-## Three tools
+## Four tools
 
 - **`mcp__varro__sql`** — query a SQLAlchemy database, optionally store the result as a named DataFrame in the persistent kernel
 - **`mcp__varro__jupyter`** — run Python in a stateful IPython kernel, file-backed as `notebooks/<name>.py` (Jupytext percent format)
 - **`mcp__varro__dashboard_snapshot`** — take a dashboard URL, run its outputs, and dump figures, tables, and metrics to disk so the agent can read them without screenshots
+- **`mcp__varro__install_packages`** — install Python packages into the current Varro environment and persist them in `.varro/packages.txt`
 
 Plus four skills (`varro:dashboards`, `varro:sql`, `varro:jupyter`, `varro:workflow`) that document how to use each tool and how to author dashboards.
 
@@ -75,7 +76,7 @@ The plugin provides:
 
 - Varro MCP tools for SQL, Jupyter, and dashboard snapshots
 - bundled skills for dashboards, SQL, and Jupyter
-- editable source code in `server/`
+- a `bin/varro-mcp` launcher that runs the published `varro-mcp` Python distribution through `uv`
 
 For development from a local clone:
 
@@ -85,7 +86,7 @@ cd varro_plugin
 codex plugin marketplace add .
 ```
 
-Then install or refresh **Varro** from `/plugins`. The plugin's MCP server runs through `bin/varro-mcp`, which resolves the installed plugin root and then runs `uv run --project <plugin-root>/server python -m varro.main`.
+Then install or refresh **Varro** from `/plugins`. The plugin's MCP server runs through `bin/varro-mcp`, which resolves the installed plugin root and then runs `uv run --with varro-mcp==<version> varro-mcp`. The dashboard command is shipped by the same distribution, so it can be started with `uv run --with varro-mcp==<version> varro --project-dir .`. For local development before publishing, set `VARRO_USE_LOCAL_SERVER=1` or `VARRO_SERVER_PROJECT=/path/to/server` to run the bundled server project instead.
 
 The local marketplace entry points at `plugins/varro`, a symlink back to the repo root. That keeps Codex's installer happy even if your checkout directory is named something other than `varro`.
 
@@ -96,7 +97,8 @@ The plugin expects a workspace shaped like this:
 ```
 your-project/
 ├── .varro/
-│   └── sql_connection.txt   # SQLAlchemy URL for mcp__varro__sql
+│   ├── sql_connection.txt   # SQLAlchemy URL for mcp__varro__sql
+│   └── packages.txt         # optional extra Python packages for Jupyter
 ├── data/                    # files referenced by dashboards / notebooks
 ├── dashboards/
 │   └── <name>/
@@ -108,6 +110,8 @@ your-project/
 ```
 
 The project root defaults to the current working directory for MCP tools. Set `VARRO_PROJECT_DIR` if the server is launched from elsewhere.
+
+Add notebook dependencies either by editing `.varro/packages.txt` with one package spec per line or by using `mcp__varro__install_packages`. The launcher passes that file to `uv run --with-requirements`, so package additions persist across Codex threads.
 
 ## Extending the plugin
 

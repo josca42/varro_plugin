@@ -2,6 +2,7 @@ import asyncio
 import base64
 import io
 import logging
+import subprocess
 import sys
 
 import matplotlib.pyplot as plt
@@ -11,7 +12,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.types import ImageContent, TextContent
 
 from varro import notebook as nb
-from varro.constants import PROJECT_DIR
+from varro.constants import PROJECT_DIR, VARRO_DIR
 from varro.dashboard import take_snapshot
 from varro.shell import JUPYTER_INITIAL_IMPORTS, get_shell
 from varro.sql import run_sql
@@ -26,6 +27,35 @@ exec_lock = asyncio.Lock()
 JUPYTER_MAX_PIXELS = 600_000
 
 mcp = FastMCP("varro")
+
+
+def _normalize_package_specs(packages: list[str]) -> list[str]:
+    specs = []
+    for package in packages:
+        spec = package.strip()
+        if spec and not spec.startswith("#"):
+            specs.append(spec)
+    if not specs:
+        raise RuntimeError("packages must include at least one package specifier.")
+    return specs
+
+
+def _persist_package_specs(specs: list[str]) -> list[str]:
+    path = VARRO_DIR / "packages.txt"
+    existing_text = path.read_text() if path.exists() else ""
+    existing_specs = {
+        line.strip()
+        for line in existing_text.splitlines()
+        if line.strip() and not line.strip().startswith("#")
+    }
+    new_specs = [spec for spec in specs if spec not in existing_specs]
+    if not new_specs:
+        return []
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    separator = "" if not existing_text or existing_text.endswith("\n") else "\n"
+    path.write_text(existing_text + separator + "\n".join(new_specs) + "\n")
+    return new_specs
 
 
 def _switch(name: str) -> None:
@@ -79,6 +109,52 @@ async def _render(name: str) -> list[TextContent | ImageContent]:
             type="text", text=f"<{name!r}: unsupported type {type(obj).__name__}>"
         )
     ]
+
+
+@mcp.tool()
+async def install_packages(packages: list[str]) -> list[TextContent]:
+    """Install Python packages into the current Varro environment and persist
+    them for future server starts.
+
+    Args:
+        packages: Package specifiers accepted by `uv pip install`, for example
+                  `["seaborn", "statsmodels>=0.14"]`.
+
+    The package specs are appended to `<project>/.varro/packages.txt`; the
+    launcher reads that file on startup via `uv run --with-requirements`.
+    """
+    specs = _normalize_package_specs(packages)
+
+    cmd = ["uv", "pip", "install", "--python", sys.executable, *specs]
+    try:
+        proc = subprocess.run(
+            cmd,
+            cwd=PROJECT_DIR,
+            text=True,
+            capture_output=True,
+            timeout=600,
+        )
+    except FileNotFoundError:
+        raise RuntimeError("uv was not found on PATH; cannot install packages.")
+    except subprocess.TimeoutExpired:
+        raise RuntimeError("Package installation timed out after 600 seconds.")
+
+    if proc.returncode != 0:
+        detail = (proc.stderr or proc.stdout or "").strip()
+        raise RuntimeError(f"Package installation failed: {detail}")
+
+    persisted_specs = _persist_package_specs(specs)
+    lines = [
+        "Installed into current Varro environment:",
+        *[f"- {spec}" for spec in specs],
+        f"Persisted in {VARRO_DIR / 'packages.txt'}",
+    ]
+    if not persisted_specs:
+        lines.append("No new package specs were added; all were already persisted.")
+    output = (proc.stdout or proc.stderr or "").strip()
+    if output:
+        lines.append(output)
+    return [TextContent(type="text", text="\n".join(lines))]
 
 
 @mcp.tool()
@@ -223,5 +299,9 @@ async def dashboard_snapshot(url: str) -> list[TextContent]:
     return [TextContent(type="text", text="\n".join(lines))]
 
 
-if __name__ == "__main__":
+def main() -> None:
     mcp.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()

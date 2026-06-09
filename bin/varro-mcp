@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:$PATH"
+
 plugin_root="${VARRO_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:-}}}"
 
 if [[ -z "$plugin_root" ]]; then
@@ -16,4 +18,35 @@ if ! command -v uv >/dev/null 2>&1; then
   exit 127
 fi
 
-exec uv run --project "$plugin_root/server" python -m varro.main
+project_dir="${VARRO_PROJECT_DIR:-$PWD}"
+varro_dir="$project_dir/.varro"
+packages_file="${VARRO_PACKAGES_FILE:-$varro_dir/packages.txt}"
+package_spec="${VARRO_PACKAGE_SPEC:-varro-mcp==0.1.0}"
+
+mkdir -p "$varro_dir"
+export VARRO_PROJECT_DIR="$project_dir"
+export UV_CACHE_DIR="${UV_CACHE_DIR:-$varro_dir/uv-cache}"
+export MPLCONFIGDIR="${MPLCONFIGDIR:-$varro_dir/matplotlib}"
+
+if [[ -n "${VARRO_SERVER_PROJECT:-}" ]]; then
+  uv_args=(run --project "$VARRO_SERVER_PROJECT")
+elif [[ "${VARRO_USE_LOCAL_SERVER:-}" == "1" ]]; then
+  uv_args=(run --project "$plugin_root/server")
+else
+  uv_args=(run)
+  search_dir="$project_dir"
+  while [[ "$search_dir" != "/" ]]; do
+    if [[ -f "$search_dir/pyproject.toml" || -f "$search_dir/uv.toml" ]]; then
+      uv_args+=(--no-project)
+      break
+    fi
+    search_dir="$(dirname "$search_dir")"
+  done
+  uv_args+=(--with "$package_spec")
+fi
+
+if [[ -s "$packages_file" ]]; then
+  uv_args+=(--with-requirements "$packages_file")
+fi
+
+exec uv "${uv_args[@]}" varro-mcp
