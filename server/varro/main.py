@@ -58,7 +58,7 @@ def _persist_package_specs(specs: list[str]) -> list[str]:
     return new_specs
 
 
-def _switch(name: str) -> None:
+def _switch(name: str, strict: bool = True) -> None:
     global shell, current_notebook
     nb.NOTEBOOKS_DIR.mkdir(parents=True, exist_ok=True)
     path = nb.resolve(name)
@@ -68,14 +68,22 @@ def _switch(name: str) -> None:
     for cell_src in nb.parse_cells(path.read_text()):
         result = new_shell.run_cell(cell_src)
         if result.error_in_exec:
-            raise RuntimeError(
-                f"Replay failed in {path.name}: {result.error_in_exec!r}"
-            )
+            if strict:
+                raise RuntimeError(
+                    f"Replay failed in {path.name}: {result.error_in_exec!r}"
+                )
+            log.warning("Skipping failed cell in %s: %r", path.name, result.error_in_exec)
     shell = new_shell
     current_notebook = path.name
 
 
-_switch("sandbox")
+try:
+    _switch("sandbox", strict=False)
+except Exception as e:
+    log.warning("Sandbox startup load failed: %r", e)
+    shell = get_shell()
+    shell.run_cell(JUPYTER_INITIAL_IMPORTS)
+    current_notebook = "sandbox.py"
 
 
 def _png(b: bytes) -> ImageContent:
@@ -198,7 +206,7 @@ async def sql(
             shell.user_ns[df_name] = df
             nb.append_cell(
                 nb.resolve(current_notebook),
-                f'{df_name} = run_sql("""\n{query.strip()}\n""")',
+                f"{df_name} = run_sql({query.strip()!r})",
             )
             result_parts.insert(0, f"Stored as {df_name}")
             result_parts.append(df_dtypes(df))

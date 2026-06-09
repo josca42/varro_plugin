@@ -35,9 +35,12 @@ class OutputRef:
 ASTNode = Union[ContainerNode, ComponentNode, MarkdownNode, Filter]
 
 
+COMPONENT_TYPES = frozenset({"fig", "table", "metric", "filter-select", "filter-date", "filter-check"})
+
 CONTAINER_OPEN = re.compile(r"^:::\s*(\w+)(?:\s+(.+))?$")
 CONTAINER_CLOSE = re.compile(r"^:::\s*$")
 COMPONENT_START = re.compile(r"^\s*<([\w-]+)\b")
+COMPONENT_LINE = re.compile(r"^\s*(?:<[\w-]+(?:\s[^<]*?)?\s*/>\s*)+$")
 COMPONENT_TAG = re.compile(r"<([\w-]+)(.*?)\s*/>", re.DOTALL)
 ATTR_PATTERN = re.compile(r"""([\w-]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'<>/]+)))?""")
 
@@ -53,10 +56,11 @@ def parse_attrs(attr_str: str) -> dict[str, str]:
     return out
 
 
-def _component_from_text(text: str) -> ComponentNode | None:
-    if not (m := COMPONENT_TAG.search(text)):
-        return None
-    return ComponentNode(type=m.group(1), attrs=parse_attrs(m.group(2)))
+def _components_from_text(text: str) -> list[ComponentNode]:
+    return [
+        ComponentNode(type=m.group(1), attrs=parse_attrs(m.group(2)))
+        for m in COMPONENT_TAG.finditer(text)
+    ]
 
 
 def parse_dashboard_md(content: str) -> list[ASTNode]:
@@ -83,12 +87,16 @@ def parse_dashboard_md(content: str) -> list[ASTNode]:
 
     for line in content.split("\n"):
         if component_buffer:
-            component_buffer.append(line)
-            if "/>" in line:
-                if node := _component_from_text("\n".join(component_buffer)):
-                    append_component(node)
+            if not line.strip() or line.lstrip().startswith(":::"):
+                md_buffer.extend(component_buffer)
                 component_buffer = []
-            continue
+            else:
+                component_buffer.append(line)
+                if "/>" in line:
+                    for node in _components_from_text("\n".join(component_buffer)):
+                        append_component(node)
+                    component_buffer = []
+                continue
 
         if CONTAINER_CLOSE.match(line):
             flush_markdown()
@@ -106,12 +114,13 @@ def parse_dashboard_md(content: str) -> list[ASTNode]:
             container_stack.append(node)
             continue
 
-        if node := _component_from_text(line):
+        if COMPONENT_LINE.match(line):
             flush_markdown()
-            append_component(node)
+            for node in _components_from_text(line):
+                append_component(node)
             continue
 
-        if COMPONENT_START.match(line) and not line.strip().endswith(">"):
+        if (m := COMPONENT_START.match(line)) and m.group(1) in COMPONENT_TYPES and not line.strip().endswith(">"):
             flush_markdown()
             component_buffer = [line]
             continue
