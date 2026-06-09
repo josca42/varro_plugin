@@ -1,6 +1,6 @@
 [project]
 name = "varro-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "SQL, persistent Jupyter, and markdown dashboard tooling for Codex."
 readme = "README.md"
 requires-python = ">=3.13"
