@@ -1,6 +1,6 @@
 {
   "name": "varro",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SQL, persistent Jupyter, and markdown dashboard tooling for Codex.",
   "author": {
     "name": "josca42"
