@@ -26,7 +26,7 @@ duckdb:///./analytics.duckdb
 mysql+pymysql://user:password@localhost:3306/dbname
 ```
 
-Driver packages (e.g. `psycopg`, `pymysql`, `duckdb-engine`) must be installed separately — add them to the plugin's `pyproject.toml` if missing.
+The Postgres driver (`psycopg`) ships bundled. Other drivers (e.g. `pymysql`, `duckdb-engine`) must be added separately — use `mcp__varro__install_packages` (or add them to `.varro/packages.txt`), which installs into the current environment and persists across sessions. Prefer this over editing the plugin's `pyproject.toml`, since a plugin reinstall overwrites local edits.
 
 ## Engine caching
 

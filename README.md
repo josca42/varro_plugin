@@ -14,11 +14,15 @@ Inspired by answer.ai and pi: Uses fasthtml, htmx and various code snippet from 
 
 ## Install
 
-Probably easiest installed in Codex Desktop by using the marketplace git repo
-https://github.com/josca42/varro_marketplace.git.
+Add the Varro marketplace, then install **Varro** from `/plugins` — no manual Python setup.
 
-Before first use, run the runtime setup in [INSTALL.md](INSTALL.md). Varro needs
-`uv` on `PATH`, and `uv` needs access to Python 3.13+.
+```bash
+codex plugin marketplace add josca42/varro_marketplace
+```
+
+Restart Codex, open `/plugins`, and install **Varro**.
+
+On first launch the MCP launcher ([bin/varro-mcp](bin/varro-mcp)) bootstraps everything it needs: it installs `uv` if it isn't already on `PATH`, lets `uv` provision Python 3.13+, and pulls the published `varro-mcp` package from PyPI. The first start can take a minute while dependencies download; later starts are fast. See [INSTALL.md](INSTALL.md) for what happens under the hood and the manual `uv` install (e.g. on Windows).
 
 ## Stack
 
@@ -57,38 +61,15 @@ The dashboard URL (e.g. `/<name>?region=east`) is the canonical state descriptor
 
 Authoring reference: [skills/dashboards/authoring.md](skills/dashboards/authoring.md).
 
-## Install in Codex
+## What the plugin provides
 
-Requirements:
+- Varro MCP tools for SQL, Jupyter, dashboard snapshots, and package installation
+- bundled skills for dashboards, SQL, Jupyter, and the default workflow
+- a `bin/varro-mcp` launcher that bootstraps `uv` and runs the published `varro-mcp` distribution
 
-- `uv` on PATH
-- Python 3.13+ available to `uv`
+## Development
 
-Add the Varro plugin marketplace:
-
-```bash
-codex plugin marketplace add josca42/varro_marketplace --ref main
-```
-
-Restart Codex, open `/plugins`, select the Varro marketplace, and install **Varro**.
-
-The plugin provides:
-
-- Varro MCP tools for SQL, Jupyter, and dashboard snapshots
-- bundled skills for dashboards, SQL, and Jupyter
-- a `bin/varro-mcp` launcher that runs the published `varro-mcp` Python distribution through `uv`
-
-For development from a local clone:
-
-```bash
-git clone https://github.com/josca42/varro_plugin.git
-cd varro_plugin
-codex plugin marketplace add .
-```
-
-Then install or refresh **Varro** from `/plugins`. The plugin's MCP server runs through `bin/varro-mcp`, which resolves the installed plugin root and then runs `uv run --with varro-mcp==<version> varro-mcp`. The dashboard command is shipped by the same distribution, so it can be started with `uv run --with varro-mcp==<version> varro --project-dir .`. For local development before publishing, set `VARRO_USE_LOCAL_SERVER=1` or `VARRO_SERVER_PROJECT=/path/to/server` to run the bundled server project instead.
-
-The local marketplace entry points at `plugins/varro`, a symlink back to the repo root. That keeps Codex's installer happy even if your checkout directory is named something other than `varro`.
+The server code ships inside the published `varro-mcp` package, but you can run a local checkout instead of the PyPI build by setting `VARRO_USE_LOCAL_SERVER=1` (uses the bundled [server/](server/)) or `VARRO_SERVER_PROJECT=/path/to/server`. The dashboard HTTP server ships in the same distribution: `uv run --project server varro --project-dir .`. See [notes/distribution.md](notes/distribution.md) for how the launcher and marketplace fit together.
 
 ## Workspace layout (the user side)
 

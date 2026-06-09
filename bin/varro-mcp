@@ -3,7 +3,7 @@ set -euo pipefail
 
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:$PATH"
 
-plugin_root="${VARRO_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:-}}}"
+plugin_root="${VARRO_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}}"
 
 if [[ -z "$plugin_root" ]]; then
   script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -11,17 +11,30 @@ if [[ -z "$plugin_root" ]]; then
 fi
 
 if ! command -v uv >/dev/null 2>&1; then
-  printf '%s\n' \
-    "Varro requires uv, but uv was not found on PATH." \
-    "Run the first-use setup in:" \
-    "  $plugin_root/INSTALL.md" >&2
-  exit 127
+  echo "Varro: uv not found on PATH; installing it now..." >&2
+  if command -v curl >/dev/null 2>&1; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh >&2 || true
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO- https://astral.sh/uv/install.sh | sh >&2 || true
+  else
+    printf '%s\n' \
+      "Varro requires uv, but neither curl nor wget is available to install it." \
+      "Install uv manually: https://docs.astral.sh/uv/getting-started/installation/" >&2
+    exit 127
+  fi
+  hash -r 2>/dev/null || true
+  if ! command -v uv >/dev/null 2>&1; then
+    printf '%s\n' \
+      "Varro installed uv but it is not yet on PATH." \
+      "Restart Codex (or add \$HOME/.local/bin to PATH) and try again." >&2
+    exit 127
+  fi
 fi
 
 project_dir="${VARRO_PROJECT_DIR:-$PWD}"
 varro_dir="$project_dir/.varro"
 packages_file="${VARRO_PACKAGES_FILE:-$varro_dir/packages.txt}"
-package_spec="${VARRO_PACKAGE_SPEC:-varro-mcp==0.1.0}"
+package_spec="${VARRO_PACKAGE_SPEC:-varro-mcp}"
 
 mkdir -p "$varro_dir"
 export VARRO_PROJECT_DIR="$project_dir"
