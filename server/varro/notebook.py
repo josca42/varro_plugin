@@ -1,9 +1,8 @@
-import re
+import io
+import tokenize
 from pathlib import Path
 
 from varro.constants import NOTEBOOKS_DIR
-
-_CELL_RE = re.compile(r"^# %%.*$", re.MULTILINE)
 
 
 def resolve(name: str) -> Path:
@@ -14,8 +13,30 @@ def resolve(name: str) -> Path:
     return path
 
 
+def _marker_lines(text: str) -> list[int]:
+    lines = []
+    tokens = tokenize.generate_tokens(io.StringIO(text).readline)
+    for tok in tokens:
+        if (
+            tok.type == tokenize.COMMENT
+            and tok.start[1] == 0
+            and tok.string.startswith("# %%")
+        ):
+            lines.append(tok.start[0])
+    return lines
+
+
 def parse_cells(text: str) -> list[str]:
-    return [c.strip() for c in _CELL_RE.split(text) if c.strip()]
+    lines = text.splitlines(keepends=True)
+    bounds = _marker_lines(text) + [len(lines) + 1]
+    cells = []
+    start = 1
+    for marker in bounds:
+        chunk = "".join(lines[start - 1 : marker - 1]).strip()
+        if chunk:
+            cells.append(chunk)
+        start = marker + 1
+    return cells
 
 
 def append_cell(path: Path, code: str) -> None:

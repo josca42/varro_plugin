@@ -135,6 +135,6 @@ def _normalize_date_columns(df: pd.DataFrame) -> pd.DataFrame:
 def _infer_param_type(name: str, value: Any = None):
     if isinstance(value, bool):
         return Boolean
-    if "date" in name or "from" in name or "to" in name:
+    if name == "date" or name.endswith(("_date", "_from", "_to")):
         return Date
     return String
