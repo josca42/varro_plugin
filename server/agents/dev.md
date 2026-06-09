@@ -23,7 +23,7 @@ This is what MCP clients (Claude Code, Codex) ultimately invoke. The plugin's `.
 ## Env vars
 
 - `VARRO_PROJECT_DIR` (default `.` for MCP tools) — project root containing `dashboards/`, `notebooks/`, `.varro/`, and `data/`
-- `VARRO_PACKAGE_SPEC` (default `varro-mcp==0.1.0`) — package spec used by the plugin wrapper in published-package mode
+- `VARRO_PACKAGE_SPEC` (default `varro-mcp`, unpinned so published patches flow through) — package spec used by the plugin wrapper in published-package mode; set e.g. `varro-mcp==0.1.0` to pin
 - `VARRO_PACKAGES_FILE` (default `{project_dir}/.varro/packages.txt`) — extra notebook package requirements passed to `uv run --with-requirements`
 - `VARRO_USE_LOCAL_SERVER=1` — run `{plugin_root}/server` instead of the published package
 - `VARRO_SERVER_PROJECT=/path/to/server` — run a specific local server project instead of the published package

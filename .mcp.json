@@ -4,7 +4,7 @@
       "command": "bash",
       "args": [
         "-lc",
-        "set -euo pipefail\nplugin_root=\"${VARRO_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}}\"\nif [[ -z \"$plugin_root\" ]]; then\n  for candidate in \"$HOME\"/.codex/plugins/cache/*/varro/* \"$HOME\"/.claude/plugins/cache/*/varro/*; do\n    if [[ -x \"$candidate/bin/varro-mcp\" ]]; then\n      plugin_root=\"$candidate\"\n    fi\n  done\nfi\nif [[ -z \"$plugin_root\" ]]; then\n  echo \"Varro plugin root could not be resolved.\" >&2\n  exit 127\nfi\nexec \"$plugin_root/bin/varro-mcp\""
+        "set -euo pipefail\nplugin_root=\"${VARRO_PLUGIN_ROOT:-${CODEX_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-}}}\"\nif [[ -z \"$plugin_root\" ]]; then\n  for candidate in \"$HOME\"/.codex/plugins/cache/*/varro/* \"$HOME\"/.claude/plugins/cache/*/varro/*; do\n    if [[ -x \"$candidate/bin/varro-mcp\" ]]; then\n      plugin_root=\"$candidate\"\n      break\n    fi\n  done\nfi\nif [[ -z \"$plugin_root\" ]]; then\n  echo \"Varro plugin root could not be resolved.\" >&2\n  exit 127\nfi\nexport VARRO_PLUGIN_ROOT=\"$plugin_root\"\nexec \"$plugin_root/bin/varro-mcp\""
       ],
       "startup_timeout_sec": 120,
       "tool_timeout_sec": 120

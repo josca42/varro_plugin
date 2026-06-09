@@ -128,10 +128,10 @@ def fn_name(filters: dict):
 - Duplicate output names fail at dashboard load.
 - Markdown references to unknown outputs fail at dashboard load.
 - Return type determines rendering:
-  - `Metric(value, label, format)` → stat card. `format` is `"number"` / `"currency"` / `"percent"`
+  - `Metric(value, label, format)` → stat card. `format` is `"number"` / `"currency"` / `"percent"`. `"percent"` expects a fraction (`0.42` → `42.0%`): values with `abs(value) < 1` are multiplied by 100, so pass `0.5` for 50%, not for 0.5%.
   - `pd.DataFrame` → interactive table with optional table tag attributes
   - `pd.io.formats.style.Styler` → static styled table
-  - `plotly.graph_objects.Figure` (or anything with `.to_html()`) → embedded Plotly chart
+  - `plotly.graph_objects.Figure` (including Plotly Express figures) → embedded Plotly chart. The dispatch is a strict `isinstance` check, so only real Plotly figures render.
 - Function name must match the `name=` attribute on the markdown tag. `<fig />`, `<table />`, `<metric />` dispatch by return type, not by tag.
 - Use module-local `@functools.cache` helpers when an output reads a dataset that doesn't change per-call.
 

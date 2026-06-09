@@ -75,6 +75,6 @@ The snapshot result lists actual `figures:` and `tables:` stems — tables with 
 ## Pitfalls
 
 - **Tiny filtered cohorts.** Quantile bands and other binnings can fail on duplicate edges when filters narrow to a handful of rows.
-- **Silent name mismatch.** `<fig name="x" />` requires an `@output` named `x`; mismatch shows as a 404 in the browser console, not as a snapshot error. View in a browser at least once after structural changes.
+- **Output name mismatch.** `<fig name="x" />` requires an `@output` named `x`. A mismatch fails at dashboard *load* with an explicit `Unknown output 'x' referenced ...` error (which lists the known outputs) — surfaced by **both** `dashboard_snapshot` and the browser (the page fails to render). The fix is to align the tag's `name=` with the `@output` function name.
 - **Styler tables.** Snapshots preserve the underlying data but not the styling. Read the parquet for values; visit the browser if styling carries the message.
 - **`pyarrow` is required** for parquet writes.

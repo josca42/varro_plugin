@@ -1,14 +1,21 @@
-# Varro First-Run Install
+# Varro First-Run Setup
 
-Run this once before using the Varro plugin for the first time.
+Varro sets itself up on first launch — there is usually nothing to install by hand.
 
-Varro is launched by Codex through `bin/varro-mcp`. That launcher expects `uv`
-on `PATH`; `uv` then runs the published `varro-mcp` Python distribution and any
-workspace-specific packages listed in `.varro/packages.txt`.
+When Codex first starts the Varro MCP server, the launcher (`bin/varro-mcp`):
 
-## 1. Install uv
+1. installs `uv` if it isn't already on your `PATH` (via <https://astral.sh/uv>);
+2. lets `uv` download Python 3.13+ if you don't already have it;
+3. pulls the published `varro-mcp` package from PyPI and starts the server.
 
-macOS and Linux:
+The first launch can take a minute while dependencies download. Later launches are fast.
+
+## Manual uv install
+
+Auto-install covers macOS and Linux. On Windows — or if you would rather install
+`uv` yourself first — run:
+
+macOS / Linux:
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -22,27 +29,15 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 Restart your terminal and Codex if `uv` was added to `PATH` during install.
 
-## 2. Install Python 3.13
+## Verify (optional)
+
+This resolves and runs the published package straight from PyPI, from any directory:
 
 ```bash
-uv python install 3.13
+uv run --with varro-mcp varro --help
 ```
 
-Varro currently requires Python 3.13 or newer. Installing it through `uv` keeps
-the plugin independent of whatever Python is already on the machine.
-
-## 3. Verify Varro
-
-From the Varro plugin root:
-
-```bash
-uv --version
-uv run --with varro-mcp==0.1.0 varro --help
-```
-
-The first `uv run` may download and install Varro's Python dependencies.
-
-## 4. Extra notebook packages
+## Extra notebook packages
 
 For project-specific notebook dependencies, create:
 
@@ -60,9 +55,3 @@ statsmodels>=0.14
 The MCP launcher passes this file to `uv run --with-requirements`. During a
 running session, the `install_packages` MCP tool can add packages immediately
 and persist them to the same file.
-
-## DST access
-
-This file only prepares the core Varro runtime. Hosted Danmarks Statistik access
-is configured per workspace by the separate `varro-dst` plugin; see
-`varro_dst/INSTALL.md` in the Varro marketplace checkout.
